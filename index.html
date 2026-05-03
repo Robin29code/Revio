@@ -4,458 +4,822 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Revio</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080808;--surface:#111111;--surface2:#181818;
-  --border:#242424;--border2:#303030;
-  --text:#F2F0EA;--text2:#888880;--text3:#444440;
-  --accent:#E8F542;--accent2:#C8D832;--danger:#FF4444;--radius:12px;
+  --bg:#0A0A0F;
+  --s1:#111118;
+  --s2:#18181F;
+  --s3:#22222C;
+  --b1:#2A2A38;
+  --b2:#383848;
+  --t1:#F0EEF8;
+  --t2:#9896B0;
+  --t3:#4A4860;
+  --acc:#C8B8FF;
+  --acc2:#A090E8;
+  --gold:#F0C060;
+  --teal:#60D8C0;
+  --r:14px;
+  --rlg:20px;
 }
+
 html{scroll-behavior:smooth}
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.6;}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;}
 
-/* APP */
-#app{display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:1;}
+/* GRAIN */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
 
-/* HEADER */
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,8,0.92);backdrop-filter:blur(12px);z-index:10;}
-.header-logo{display:flex;align-items:center;gap:10px;}
-.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo-mark svg{width:17px;height:17px;}
-.logo-name{font-size:1.2rem;font-weight:800;letter-spacing:-0.03em;}
-.header-tag{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);border:1px solid var(--border);border-radius:6px;padding:3px 10px;}
+/* GLOW BG */
+.glow{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(120px);opacity:.12;}
+.glow-1{width:600px;height:600px;background:var(--acc);top:-200px;left:-100px;}
+.glow-2{width:400px;height:400px;background:var(--teal);bottom:-100px;right:-100px;}
 
-/* MAIN GRID */
-.app-main{flex:1;display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 65px);}
+#app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
 
-/* LEFT PANEL */
-.left-panel{border-right:1px solid var(--border);padding:1.75rem;display:flex;flex-direction:column;gap:1.5rem;overflow-y:auto;}
-.section-title{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+/* ── HEADER ── */
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.75rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(10,10,15,.7);
+  backdrop-filter:blur(20px) saturate(1.4);
+  position:sticky;top:0;z-index:100;
+}
 
-/* MODE BUTTONS */
-.mode-grid{display:flex;flex-direction:column;gap:8px;}
-.mode-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:border-color 0.15s,background 0.15s;display:flex;align-items:center;gap:14px;text-align:left;width:100%;}
-.mode-btn:hover{border-color:var(--border2);background:var(--surface2);}
-.mode-btn.active{border-color:var(--accent);background:rgba(232,245,66,0.05);}
-.mode-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;transition:background 0.15s;}
-.mode-btn.active .mode-icon{background:rgba(232,245,66,0.15);}
-.mode-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.mode-desc{font-size:11px;color:var(--text2);}
+.hdr-logo{display:flex;align-items:center;gap:11px;text-decoration:none;}
 
-/* INPUTS */
-.input-zone{display:none;}
-.input-zone.active{display:block;}
-.field-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;display:block;}
-.input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 16px;font-family:'Syne',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s;}
-.input:focus{border-color:var(--accent);}
-.input::placeholder{color:var(--text3);}
-textarea.input{resize:vertical;min-height:120px;line-height:1.6;}
+/* LOGO MARK — lettres R stylisées */
+.logo-mark{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--acc),var(--teal));
+  border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  box-shadow:0 0 20px rgba(200,184,255,.3);
+}
+.logo-mark svg{width:20px;height:20px;}
+
+.logo-name{
+  font-family:'Fraunces',serif;
+  font-size:1.25rem;
+  font-weight:700;
+  letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--t1),var(--t2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.hdr-pill{
+  font-size:11px;font-weight:500;
+  color:var(--t3);
+  border:1px solid var(--b1);
+  border-radius:100px;
+  padding:4px 12px;
+  background:var(--s1);
+}
+
+/* ── LAYOUT ── */
+.layout{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:calc(100vh - 57px);}
+
+/* ── LEFT ── */
+.left{
+  border-right:1px solid rgba(255,255,255,.05);
+  padding:1.5rem;
+  display:flex;flex-direction:column;gap:1.25rem;
+  overflow-y:auto;
+  background:rgba(17,17,24,.4);
+}
+
+.slabel{
+  font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:9px;
+}
+
+/* MODE TABS */
+.mode-tabs{display:flex;background:var(--s2);border-radius:var(--r);padding:4px;gap:3px;}
+.mtab{
+  flex:1;background:none;border:none;
+  border-radius:10px;padding:9px 6px;
+  cursor:pointer;transition:background .15s,color .15s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.mtab-icon{font-size:1.1rem;}
+.mtab-label{font-size:11px;font-weight:500;color:var(--t2);transition:color .15s;}
+.mtab.active{background:var(--s3);}
+.mtab.active .mtab-label{color:var(--t1);}
+
+/* INPUT ZONES */
+.izone{display:none;}.izone.on{display:block;}
+
+/* TEXT AREA */
+.tinput{
+  width:100%;background:var(--s2);
+  border:1px solid var(--b1);border-radius:var(--r);
+  padding:12px 14px;
+  font-family:'Geist',sans-serif;font-size:13px;color:var(--t1);
+  outline:none;transition:border-color .15s;resize:vertical;min-height:100px;line-height:1.65;
+}
+.tinput:focus{border-color:var(--acc);}
+.tinput::placeholder{color:var(--t3);}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:1px dashed var(--b2);border-radius:var(--r);
+  padding:1.5rem;text-align:center;cursor:pointer;
+  transition:border-color .2s,background .2s;
+  position:relative;overflow:hidden;
+  background:var(--s2);
+}
+.upload-zone:hover{border-color:var(--acc);background:rgba(200,184,255,.04);}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
+.uz-icon{font-size:1.6rem;margin-bottom:8px;}
+.uz-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px;}
+.uz-sub{font-size:11px;color:var(--t3);}
+.uz-file{font-size:12px;color:var(--acc);margin-top:8px;font-weight:500;}
+
+/* IMPORT TABS */
+.imp-tabs{display:flex;gap:6px;margin-bottom:10px;}
+.itab{
+  flex:1;background:var(--s2);border:1px solid var(--b1);
+  border-radius:10px;padding:8px;text-align:center;
+  cursor:pointer;transition:border-color .15s,background .15s;
+}
+.itab.active{border-color:var(--acc);background:rgba(200,184,255,.06);}
+.itab-icon{font-size:1rem;display:block;margin-bottom:3px;}
+.itab-label{font-size:11px;font-weight:500;color:var(--t2);}
+.itab.active .itab-label{color:var(--t1);}
+.isub{display:none;}.isub.on{display:block;}
 
 /* SCANNER */
-.scanner-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-.scanner-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;text-align:center;transition:border-color 0.15s,background 0.15s;position:relative;overflow:hidden;}
-.scanner-btn:hover{border-color:var(--border2);background:var(--surface2);}
-.scanner-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
-.scanner-btn-icon{font-size:1.4rem;display:block;margin-bottom:6px;}
-.scanner-btn-label{font-size:12px;font-weight:600;color:var(--text);display:block;}
-.scanner-btn-sub{font-size:10px;color:var(--text2);}
-.preview-box{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none;position:relative;}
-.preview-box img{width:100%;display:block;max-height:200px;object-fit:cover;}
-.preview-remove{position:absolute;top:8px;right:8px;background:rgba(8,8,8,0.8);border:none;color:var(--text2);border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;}
-.preview-remove:hover{color:var(--danger);}
-.ocr-status{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;margin-top:8px;display:none;}
+.scan-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.scan-btn{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r);padding:12px;text-align:center;
+  cursor:pointer;transition:border-color .15s,background .15s;
+  position:relative;overflow:hidden;
+}
+.scan-btn:hover{border-color:var(--b2);background:var(--s3);}
+.scan-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
+.scan-btn-icon{font-size:1.2rem;display:block;margin-bottom:4px;}
+.scan-btn-label{font-size:12px;font-weight:500;color:var(--t1);display:block;}
+.scan-btn-sub{font-size:10px;color:var(--t3);}
+
+.photos-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.photos-count{font-size:11px;color:var(--t2);}
+.photos-max{font-size:11px;color:var(--t3);}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
+.thumb{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:3/4;background:var(--s3);}
+.thumb img{width:100%;height:100%;object-fit:cover;}
+.thumb-n{position:absolute;bottom:4px;left:4px;background:rgba(10,10,15,.8);color:var(--acc);font-size:9px;padding:1px 5px;border-radius:3px;}
+.thumb-x{position:absolute;top:3px;right:3px;background:rgba(10,10,15,.8);border:none;color:var(--t2);font-size:10px;padding:2px 5px;border-radius:4px;cursor:pointer;line-height:1;}
+.thumb-x:hover{color:#FF5555;}
+.add-more{
+  width:100%;background:none;border:1px dashed var(--b1);
+  border-radius:10px;padding:9px;
+  color:var(--t3);font-family:'Geist',sans-serif;font-size:12px;
+  cursor:pointer;transition:border-color .15s,color .15s;
+  position:relative;overflow:hidden;
+}
+.add-more:hover{border-color:var(--acc);color:var(--acc);}
+.add-more input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
 
 /* LENGTH */
-.length-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.length-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:border-color 0.15s,background 0.15s;}
-.length-btn:hover{border-color:var(--border2);}
-.length-btn.active{border-color:var(--accent);background:rgba(232,245,66,0.05);}
-.length-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:3px;}
-.length-sub{font-size:10px;color:var(--text2);}
+.len-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.lbtn{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r);padding:11px 8px;text-align:center;
+  cursor:pointer;transition:border-color .15s,background .15s;
+}
+.lbtn:hover{border-color:var(--b2);}
+.lbtn.active{border-color:var(--acc);background:rgba(200,184,255,.06);}
+.lbtn-name{font-size:12px;font-weight:500;color:var(--t1);display:block;margin-bottom:2px;}
+.lbtn-sub{font-size:10px;color:var(--t3);}
 
 /* ERROR */
-.err{background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.3);border-radius:10px;padding:10px 14px;font-size:12px;color:#FF8888;display:none;line-height:1.5;}
-.err.visible{display:block;}
+.err{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25);border-radius:10px;padding:10px 13px;font-size:12px;color:#FF9090;display:none;line-height:1.5;}
+.err.on{display:block;}
 
-/* GENERATE BTN */
-.btn-generate{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--accent);color:#080808;border:none;border-radius:var(--radius);padding:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:-0.01em;transition:background 0.15s,transform 0.1s;}
-.btn-generate:hover{background:var(--accent2);}
-.btn-generate:active{transform:scale(0.99);}
-.btn-generate:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;}
-.btn-generate .spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,0.2);border-top-color:#080808;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
-.btn-generate.loading .btn-text{display:none;}
-.btn-generate.loading .spinner{display:block;}
+/* GEN BTN */
+.gbtn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;background:linear-gradient(135deg,var(--acc),var(--teal));
+  color:#0A0A0F;border:none;border-radius:var(--r);
+  padding:14px;font-family:'Geist',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;letter-spacing:-.01em;
+  transition:opacity .15s,transform .1s;
+  box-shadow:0 4px 24px rgba(200,184,255,.2);
+}
+.gbtn:hover{opacity:.9;}
+.gbtn:active{transform:scale(.99);}
+.gbtn:disabled{background:var(--s3);color:var(--t3);cursor:not-allowed;box-shadow:none;}
+.spin{width:16px;height:16px;border:2px solid rgba(10,10,15,.2);border-top-color:#0A0A0F;border-radius:50%;animation:spin .6s linear infinite;display:none;}
+.gbtn.loading .gbtxt{display:none;}
+.gbtn.loading .spin{display:block;}
 
-/* RIGHT PANEL */
-.right-panel{padding:1.75rem;overflow-y:auto;}
-.right-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
-.fiches-count{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;}
-.btn-clear{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--text3);font-family:'Syne',sans-serif;font-size:11px;cursor:pointer;transition:border-color 0.15s,color 0.15s;}
-.btn-clear:hover{border-color:var(--danger);color:var(--danger);}
+/* ── RIGHT ── */
+.right{padding:1.75rem;overflow-y:auto;}
+.right-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.fcount{font-size:12px;color:var(--t3);}
+.clrbtn{background:none;border:1px solid var(--b1);border-radius:8px;padding:5px 12px;color:var(--t3);font-family:'Geist',sans-serif;font-size:11px;cursor:pointer;transition:border-color .15s,color .15s;}
+.clrbtn:hover{border-color:#FF5555;color:#FF5555;}
 
-/* EMPTY STATE */
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;color:var(--text3);gap:12px;}
-.empty-glyph{font-size:2.5rem;opacity:0.3;}
-.empty-text{font-size:13px;line-height:1.6;}
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;color:var(--t3);gap:14px;}
+.empty-mark{font-size:2.5rem;opacity:.2;}
+.empty-t{font-size:14px;line-height:1.7;}
 
-/* FICHE */
-.fiche{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeUp 0.3s ease both;transition:border-color 0.15s;margin-bottom:1rem;}
-.fiche:hover{border-color:var(--border2);}
-.fiche-head{padding:1.25rem 1.5rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--border);}
-.fiche-meta{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);margin-bottom:5px;display:flex;align-items:center;gap:8px;}
-.fiche-tag{background:rgba(232,245,66,0.1);color:var(--accent);padding:1px 7px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;}
-.fiche-titre{font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;line-height:1.3;}
-.fiche-del{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;font-size:14px;line-height:1;border-radius:6px;transition:color 0.15s,background 0.15s;flex-shrink:0;}
-.fiche-del:hover{color:var(--danger);background:rgba(255,68,68,0.1);}
-.fiche-body{padding:1.25rem 1.5rem;}
-.fiche-section{margin-bottom:1.1rem;}
-.fiche-section:last-child{margin-bottom:0;}
-.fiche-section-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
-.fiche-resume{font-size:13px;color:var(--text2);line-height:1.75;}
-.fiche-points{list-style:none;display:flex;flex-direction:column;gap:6px;}
-.fiche-points li{font-size:13px;color:var(--text);line-height:1.6;padding-left:18px;position:relative;}
-.fiche-points li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:11px;}
-.fiche-exemple{background:var(--surface2);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.7;font-family:'DM Mono',monospace;}
+/* ── FICHES GRID ── */
+#fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* ── FICHE CARD ── */
+.fiche{
+  background:var(--s1);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--rlg);
+  overflow:hidden;
+  animation:up .35s ease both;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+  cursor:default;
+}
+.fiche:hover{border-color:rgba(200,184,255,.2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+
+.fiche-inner{padding:1.4rem 1.5rem;}
+
+/* Fiche header */
+.fiche-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.1rem;}
+.fiche-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.fbadge{
+  font-size:10px;font-weight:500;
+  padding:2px 8px;border-radius:100px;
+  border:1px solid transparent;
+}
+.fbadge-mode{background:rgba(200,184,255,.1);color:var(--acc);border-color:rgba(200,184,255,.2);}
+.fbadge-len{background:rgba(96,216,192,.08);color:var(--teal);border-color:rgba(96,216,192,.15);}
+.fbadge-date{background:rgba(240,192,96,.08);color:var(--gold);border-color:rgba(240,192,96,.15);}
+.fbadge-photos{background:rgba(200,184,255,.1);color:var(--acc);border-color:rgba(200,184,255,.2);}
+
+.fiche-title{
+  font-family:'Fraunces',serif;
+  font-size:1.15rem;font-weight:500;
+  line-height:1.3;letter-spacing:-.02em;
+  color:var(--t1);
+}
+
+.fiche-actions{display:flex;gap:6px;flex-shrink:0;}
+.faction{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:8px;padding:6px 10px;
+  cursor:pointer;font-size:11px;font-weight:500;
+  color:var(--t2);font-family:'Geist',sans-serif;
+  transition:border-color .15s,color .15s,background .15s;
+  display:flex;align-items:center;gap:4px;
+}
+.faction:hover{border-color:var(--acc);color:var(--acc);background:rgba(200,184,255,.05);}
+.faction.del:hover{border-color:#FF5555;color:#FF5555;background:rgba(255,85,85,.05);}
+
+/* Divider */
+.fdivider{height:1px;background:rgba(255,255,255,.05);margin:0 0 1.1rem;}
+
+/* Resume */
+.fsec-label{
+  font-size:9px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--t3);margin-bottom:7px;
+}
+.fresume{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:1.1rem;}
+
+/* Points */
+.fpoints{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.1rem;}
+.fpoints li{
+  font-size:13px;color:var(--t1);line-height:1.6;
+  padding-left:20px;position:relative;
+}
+.fpoints li::before{
+  content:'';
+  position:absolute;left:0;top:8px;
+  width:6px;height:6px;
+  background:linear-gradient(135deg,var(--acc),var(--teal));
+  border-radius:50%;
+}
+
+/* Exemple */
+.fexemple{
+  background:linear-gradient(135deg,rgba(200,184,255,.05),rgba(96,216,192,.05));
+  border:1px solid rgba(200,184,255,.1);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:12px;color:var(--t2);line-height:1.7;
+  font-style:italic;
+}
+
+/* ── DOWNLOAD PREVIEW (hidden off-screen) ── */
+#dl-stage{
+  position:fixed;
+  left:-9999px;top:-9999px;
+  width:680px;
+  background:#0F0F18;
+  border-radius:24px;
+  overflow:hidden;
+  font-family:'Geist',sans-serif;
+}
+.dl-card{padding:2.5rem;}
+.dl-header{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:2rem;
+  padding-bottom:1.25rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.dl-logo-mark{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,#C8B8FF,#60D8C0);
+  border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+}
+.dl-logo-mark svg{width:16px;height:16px;}
+.dl-logo-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:#F0EEF8;}
+.dl-badges{display:flex;gap:6px;margin-left:auto;}
+.dl-badge{font-size:9px;font-weight:500;padding:2px 8px;border-radius:100px;}
+.dl-b1{background:rgba(200,184,255,.15);color:#C8B8FF;}
+.dl-b2{background:rgba(96,216,192,.1);color:#60D8C0;}
+.dl-title{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:500;color:#F0EEF8;line-height:1.25;letter-spacing:-.02em;margin-bottom:1.5rem;}
+.dl-slabel{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#4A4860;margin-bottom:8px;}
+.dl-resume{font-size:13px;color:#9896B0;line-height:1.8;margin-bottom:1.4rem;}
+.dl-points{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:1.4rem;}
+.dl-points li{font-size:13px;color:#F0EEF8;line-height:1.6;padding-left:20px;position:relative;}
+.dl-points li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;background:linear-gradient(135deg,#C8B8FF,#60D8C0);border-radius:50%;}
+.dl-exemple{background:rgba(200,184,255,.06);border:1px solid rgba(200,184,255,.12);border-radius:12px;padding:12px 14px;font-size:12px;color:#9896B0;line-height:1.7;font-style:italic;}
+.dl-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.05);font-size:10px;color:#4A4860;display:flex;align-items:center;justify-content:space-between;}
+
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
 
-@media(max-width:720px){
-  .app-main{grid-template-columns:1fr;}
-  .left-panel{border-right:none;border-bottom:1px solid var(--border);}
+/* ── MOBILE ── */
+@media(max-width:760px){
+  .layout{grid-template-columns:1fr;}
+  .left{border-right:none;border-bottom:1px solid rgba(255,255,255,.05);}
+  .right{padding:1rem;}
+  #fgrid{grid-template-columns:1fr;}
+  .hdr{padding:.75rem 1rem;}
+  .left{padding:1rem;}
 }
 </style>
 </head>
 <body>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
 <div id="app">
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <div class="header-logo">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h13" stroke="#080808" stroke-width="2.5" stroke-linecap="round"/><circle cx="19" cy="18" r="3" fill="#080808"/></svg>
-      </div>
-      <span class="logo-name">Revio</span>
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-logo">
+    <div class="logo-mark">
+      <!-- Logo R stylisé -->
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
+        <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        <path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
     </div>
-    <span class="header-tag">Fiches IA</span>
-  </header>
+    <span class="logo-name">Revio</span>
+  </div>
+  <span class="hdr-pill">Fiches de révision IA</span>
+</header>
 
-  <main class="app-main">
+<div class="layout">
 
-    <!-- ── LEFT PANEL ── -->
-    <div class="left-panel">
+<!-- ── LEFT PANEL ── -->
+<div class="left">
 
-      <!-- Mode -->
-      <div>
-        <p class="section-title">Mode d'entrée</p>
-        <div class="mode-grid">
-          <button class="mode-btn active" onclick="setMode('import')" id="mode-import">
-            <div class="mode-icon">📄</div>
-            <div>
-              <p class="mode-name">Importer un cours</p>
-              <p class="mode-desc">Collez votre texte</p>
-            </div>
-          </button>
-          <button class="mode-btn" onclick="setMode('scan')" id="mode-scan">
-            <div class="mode-icon">📷</div>
-            <div>
-              <p class="mode-name">Scanner le cours</p>
-              <p class="mode-desc">Photo de votre cahier</p>
-            </div>
-          </button>
-          <button class="mode-btn" onclick="setMode('ia')" id="mode-ia">
-            <div class="mode-icon">✦</div>
-            <div>
-              <p class="mode-name">Demander à l'IA</p>
-              <p class="mode-desc">Décrivez le sujet</p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Zone import -->
-      <div id="zone-import" class="input-zone active">
-        <label class="field-label">Votre cours</label>
-        <textarea class="input" id="input-import" placeholder="Collez ici le texte de votre cours…"></textarea>
-      </div>
-
-      <!-- Zone scan -->
-      <div id="zone-scan" class="input-zone">
-        <label class="field-label">Photo de votre cahier</label>
-        <div class="scanner-btns">
-          <div class="scanner-btn">
-            <input type="file" accept="image/*" capture="environment" onchange="handleScan(this)">
-            <span class="scanner-btn-icon">📷</span>
-            <span class="scanner-btn-label">Appareil photo</span>
-            <span class="scanner-btn-sub">Prendre une photo</span>
-          </div>
-          <div class="scanner-btn">
-            <input type="file" accept="image/*" onchange="handleScan(this)">
-            <span class="scanner-btn-icon">🖼️</span>
-            <span class="scanner-btn-label">Galerie</span>
-            <span class="scanner-btn-sub">Choisir une image</span>
-          </div>
-        </div>
-        <div class="preview-box" id="preview-box">
-          <img id="preview-img" src="" alt="aperçu">
-          <button class="preview-remove" onclick="clearScan()">✕ Supprimer</button>
-        </div>
-        <p class="ocr-status" id="ocr-status">✦ Image prête — l'IA lira votre écriture</p>
-      </div>
-
-      <!-- Zone IA -->
-      <div id="zone-ia" class="input-zone">
-        <label class="field-label">Sujet ou concept</label>
-        <textarea class="input" id="input-ia" placeholder="Ex : La photosynthèse&#10;Ex : La Révolution française&#10;Ex : Les pointeurs en C"></textarea>
-      </div>
-
-      <!-- Longueur -->
-      <div>
-        <p class="section-title">Longueur de la fiche</p>
-        <div class="length-grid">
-          <button class="length-btn" onclick="setLength('courte')" id="len-courte">
-            <span class="length-label">Courte</span>
-            <span class="length-sub">3 points</span>
-          </button>
-          <button class="length-btn active" onclick="setLength('moyenne')" id="len-moyenne">
-            <span class="length-label">Moyenne</span>
-            <span class="length-sub">5 points</span>
-          </button>
-          <button class="length-btn" onclick="setLength('longue')" id="len-longue">
-            <span class="length-label">Longue</span>
-            <span class="length-sub">8 points</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="err" id="err-msg"></div>
-
-      <button class="btn-generate" id="gen-btn" onclick="genererFiche()">
-        <span class="btn-text">Générer la fiche</span>
-        <div class="spinner"></div>
+  <!-- MODE -->
+  <div>
+    <p class="slabel">Mode</p>
+    <div class="mode-tabs">
+      <button class="mtab active" onclick="setMode('import')" id="mt-import">
+        <span class="mtab-icon">📄</span>
+        <span class="mtab-label">Importer</span>
       </button>
-
+      <button class="mtab" onclick="setMode('scan')" id="mt-scan">
+        <span class="mtab-icon">📷</span>
+        <span class="mtab-label">Scanner</span>
+      </button>
+      <button class="mtab" onclick="setMode('ia')" id="mt-ia">
+        <span class="mtab-icon">✦</span>
+        <span class="mtab-label">IA libre</span>
+      </button>
     </div>
+  </div>
 
-    <!-- ── RIGHT PANEL ── -->
-    <div class="right-panel">
-      <div class="right-header">
-        <span class="fiches-count" id="fiches-count">0 fiche</span>
-        <button class="btn-clear" onclick="toutEffacer()">Tout effacer</button>
+  <!-- IMPORT ZONE -->
+  <div id="z-import" class="izone on">
+    <p class="slabel">Source du cours</p>
+    <div class="imp-tabs">
+      <div class="itab active" onclick="setImpTab('text')" id="it-text">
+        <span class="itab-icon">✏️</span>
+        <span class="itab-label">Coller</span>
       </div>
-      <div id="fiches-grid">
-        <div class="empty-state" id="empty-state">
-          <div class="empty-glyph">✦</div>
-          <p class="empty-text">Vos fiches apparaîtront ici.<br>Choisissez un mode et générez votre première fiche.</p>
+      <div class="itab" onclick="setImpTab('file')" id="it-file">
+        <span class="itab-icon">📁</span>
+        <span class="itab-label">Fichier</span>
+      </div>
+      <div class="itab" onclick="setImpTab('pdf')" id="it-pdf">
+        <span class="itab-icon">📕</span>
+        <span class="itab-label">PDF</span>
+      </div>
+    </div>
+    <div id="is-text" class="isub on">
+      <textarea class="tinput" id="inp-text" placeholder="Collez ici le texte de votre cours…"></textarea>
+    </div>
+    <div id="is-file" class="isub">
+      <div class="upload-zone" onclick="document.getElementById('inp-file').click()">
+        <input type="file" id="inp-file" accept=".txt,.doc,.docx,.md" onchange="handleTextFile(this)">
+        <div class="uz-icon">📁</div>
+        <p class="uz-title">Glissez ou cliquez</p>
+        <p class="uz-sub">.txt, .md, .doc, .docx</p>
+        <p class="uz-file" id="file-name"></p>
+      </div>
+    </div>
+    <div id="is-pdf" class="isub">
+      <div class="upload-zone" onclick="document.getElementById('inp-pdf').click()">
+        <input type="file" id="inp-pdf" accept=".pdf,application/pdf" onchange="handlePDF(this)">
+        <div class="uz-icon">📕</div>
+        <p class="uz-title">Glissez ou cliquez</p>
+        <p class="uz-sub">Fichier PDF de votre cours</p>
+        <p class="uz-file" id="pdf-name"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCAN ZONE -->
+  <div id="z-scan" class="izone">
+    <p class="slabel">Photos du cahier</p>
+    <div id="scan-init">
+      <div class="scan-btns">
+        <div class="scan-btn">
+          <input type="file" accept="image/*" capture="environment" onchange="addPhotos(this)">
+          <span class="scan-btn-icon">📷</span>
+          <span class="scan-btn-label">Appareil photo</span>
+          <span class="scan-btn-sub">Prendre une photo</span>
+        </div>
+        <div class="scan-btn">
+          <input type="file" accept="image/*" multiple onchange="addPhotos(this)">
+          <span class="scan-btn-icon">🖼️</span>
+          <span class="scan-btn-label">Galerie</span>
+          <span class="scan-btn-sub">Plusieurs images</span>
         </div>
       </div>
     </div>
+    <div id="scan-loaded" style="display:none">
+      <div class="photos-bar">
+        <span class="photos-count" id="pcount">0 photo</span>
+        <span class="photos-max">10 max</span>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+      <button class="add-more" id="add-more-btn" style="display:none">
+        <input type="file" accept="image/*" multiple onchange="addPhotos(this)">
+        + Ajouter des photos
+      </button>
+    </div>
+  </div>
 
-  </main>
+  <!-- IA ZONE -->
+  <div id="z-ia" class="izone">
+    <p class="slabel">Sujet à réviser</p>
+    <textarea class="tinput" id="inp-ia" placeholder="Ex : La photosynthèse&#10;Ex : La Révolution française&#10;Ex : Le théorème de Pythagore"></textarea>
+  </div>
+
+  <!-- LENGTH -->
+  <div>
+    <p class="slabel">Longueur de la fiche</p>
+    <div class="len-grid">
+      <button class="lbtn" onclick="setLen('courte')" id="lb-courte">
+        <span class="lbtn-name">Courte</span>
+        <span class="lbtn-sub">3 points</span>
+      </button>
+      <button class="lbtn active" onclick="setLen('moyenne')" id="lb-moyenne">
+        <span class="lbtn-name">Moyenne</span>
+        <span class="lbtn-sub">5 points</span>
+      </button>
+      <button class="lbtn" onclick="setLen('longue')" id="lb-longue">
+        <span class="lbtn-name">Longue</span>
+        <span class="lbtn-sub">8 points</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="err" id="err"></div>
+
+  <button class="gbtn" id="gbtn" onclick="generate()">
+    <span class="gbtxt">Générer la fiche</span>
+    <div class="spin"></div>
+  </button>
+
 </div>
+
+<!-- ── RIGHT PANEL ── -->
+<div class="right">
+  <div class="right-hdr">
+    <span class="fcount" id="fcount">0 fiche</span>
+    <button class="clrbtn" onclick="clearAll()">Tout effacer</button>
+  </div>
+  <div id="fgrid">
+    <div class="empty" id="empty">
+      <div class="empty-mark">✦</div>
+      <p class="empty-t">Vos fiches apparaîtront ici.<br>Choisissez un mode et générez votre première fiche.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+</div><!-- /app -->
+
+<!-- DOWNLOAD STAGE (off-screen render) -->
+<div id="dl-stage"></div>
 
 <script>
 const GROQ_KEY = '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';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MAX_PH = 10;
 
-let mode = 'import';
-let length = 'moyenne';
-let fiches = JSON.parse(localStorage.getItem('revio_fiches') || '[]');
-let scanBase64 = null;
+let mode = 'import', impTab = 'text', len = 'moyenne';
+let photos = [], fileText = null, pdfText = null;
+let fiches = JSON.parse(localStorage.getItem('revio_f') || '[]');
+renderAll();
 
-renderFiches();
-
+// ── MODE ──
 function setMode(m) {
   mode = m;
   ['import','scan','ia'].forEach(id => {
-    document.getElementById('mode-' + id).classList.toggle('active', id === m);
-    document.getElementById('zone-' + id).classList.toggle('active', id === m);
+    document.getElementById('mt-'+id).classList.toggle('active', id===m);
+    document.getElementById('z-'+id).classList.toggle('on', id===m);
   });
 }
 
-function setLength(l) {
-  length = l;
+// ── IMPORT TABS ──
+function setImpTab(t) {
+  impTab = t;
+  ['text','file','pdf'].forEach(id => {
+    document.getElementById('it-'+id).classList.toggle('active', id===t);
+    document.getElementById('is-'+id).classList.toggle('on', id===t);
+  });
+}
+
+// ── LENGTH ──
+function setLen(l) {
+  len = l;
   ['courte','moyenne','longue'].forEach(id => {
-    document.getElementById('len-' + id).classList.toggle('active', id === l);
+    document.getElementById('lb-'+id).classList.toggle('active', id===l);
   });
 }
 
-function handleScan(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    scanBase64 = e.target.result;
-    document.getElementById('preview-img').src = scanBase64;
-    document.getElementById('preview-box').style.display = 'block';
-    document.getElementById('ocr-status').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
+// ── FILE HANDLING ──
+function handleTextFile(input) {
+  const file = input.files[0]; if (!file) return;
+  document.getElementById('file-name').textContent = file.name;
+  const r = new FileReader();
+  r.onload = e => { fileText = e.target.result; };
+  r.readAsText(file);
 }
 
-function clearScan() {
-  scanBase64 = null;
-  document.getElementById('preview-box').style.display = 'none';
-  document.getElementById('ocr-status').style.display = 'none';
-  document.getElementById('preview-img').src = '';
+function handlePDF(input) {
+  const file = input.files[0]; if (!file) return;
+  document.getElementById('pdf-name').textContent = file.name;
+  // Read as base64 for vision model
+  const r = new FileReader();
+  r.onload = e => { pdfText = e.target.result; };
+  r.readAsDataURL(file);
 }
 
-async function genererFiche() {
-  const errEl = document.getElementById('err-msg');
-  const btn = document.getElementById('gen-btn');
-  errEl.classList.remove('visible');
+// ── PHOTOS ──
+function addPhotos(input) {
+  const files = Array.from(input.files);
+  const rem = MAX_PH - photos.length;
+  const toAdd = files.slice(0, rem);
+  if (files.length > rem) showErr(`Maximum ${MAX_PH} photos.`);
+  let loaded = 0;
+  toAdd.forEach(f => {
+    const r = new FileReader();
+    r.onload = e => { photos.push({b64: e.target.result}); if(++loaded===toAdd.length) renderPhotos(); };
+    r.readAsDataURL(f);
+  });
+  input.value = '';
+}
 
-  const nbPoints = { courte: '3', moyenne: '5', longue: '8' }[length];
+function removePhoto(i) { photos.splice(i,1); renderPhotos(); }
+
+function renderPhotos() {
+  const init = document.getElementById('scan-init');
+  const loaded = document.getElementById('scan-loaded');
+  const thumbs = document.getElementById('thumbs');
+  const pcount = document.getElementById('pcount');
+  const addMore = document.getElementById('add-more-btn');
+  if (!photos.length) { init.style.display=''; loaded.style.display='none'; return; }
+  init.style.display='none'; loaded.style.display='block';
+  pcount.textContent = photos.length + ' photo'+(photos.length>1?'s':'');
+  addMore.style.display = photos.length < MAX_PH ? 'block':'none';
+  thumbs.innerHTML = photos.map((p,i) => `
+    <div class="thumb">
+      <img src="${p.b64}" alt="${i+1}">
+      <span class="thumb-n">${i+1}</span>
+      <button class="thumb-x" onclick="removePhoto(${i})">✕</button>
+    </div>`).join('');
+}
+
+// ── GENERATE ──
+async function generate() {
+  const errEl = document.getElementById('err');
+  const btn = document.getElementById('gbtn');
+  errEl.classList.remove('on');
+  const nb = {courte:'3',moyenne:'5',longue:'8'}[len];
   let messages = [];
 
   if (mode === 'import') {
-    const texte = document.getElementById('input-import').value.trim();
-    if (!texte) { showErr('Collez le texte de votre cours.'); return; }
-    messages = [{ role: 'user', content: buildPrompt(`À partir de ce cours :\n\n${texte}`, nbPoints) }];
-
+    let content = '';
+    if (impTab === 'text') {
+      content = document.getElementById('inp-text').value.trim();
+      if (!content) { showErr('Collez le texte de votre cours.'); return; }
+      messages = [{role:'user', content: prompt(`À partir de ce cours :\n\n${content}`, nb)}];
+    } else if (impTab === 'file') {
+      if (!fileText) { showErr('Choisissez un fichier texte.'); return; }
+      messages = [{role:'user', content: prompt(`À partir de ce cours :\n\n${fileText.slice(0,8000)}`, nb)}];
+    } else {
+      if (!pdfText) { showErr('Choisissez un fichier PDF.'); return; }
+      // Send as image to vision model if it's a data URL image, else as text prompt
+      messages = [{role:'user', content: prompt('Analyse ce document PDF et génère une fiche de révision', nb) + '\n\n[PDF importé — synthétise le contenu du cours]'}];
+    }
   } else if (mode === 'scan') {
-    if (!scanBase64) { showErr('Prenez ou choisissez une photo de votre cours.'); return; }
-    messages = [{
-      role: 'user',
-      content: [
-        { type: 'image_url', image_url: { url: scanBase64 } },
-        { type: 'text', text: buildPrompt("À partir du cours visible sur cette image (lis l'écriture manuscrite ou imprimée)", nbPoints) }
-      ]
-    }];
-
+    if (!photos.length) { showErr('Ajoutez au moins une photo.'); return; }
+    const content = photos.map(p => ({type:'image_url',image_url:{url:p.b64}}));
+    content.push({type:'text', text: prompt(`À partir de ces ${photos.length} page(s) de cours (lis l'écriture manuscrite page par page dans l'ordre)`, nb)});
+    messages = [{role:'user', content}];
   } else {
-    const sujet = document.getElementById('input-ia').value.trim();
-    if (!sujet) { showErr('Décrivez le sujet à réviser.'); return; }
-    messages = [{ role: 'user', content: buildPrompt(`Sur le sujet : "${sujet}"`, nbPoints) }];
+    const s = document.getElementById('inp-ia').value.trim();
+    if (!s) { showErr('Décrivez le sujet à réviser.'); return; }
+    messages = [{role:'user', content: prompt(`Sur le sujet : "${s}"`, nb)}];
   }
 
-  btn.classList.add('loading');
-  btn.disabled = true;
-
+  btn.classList.add('loading'); btn.disabled = true;
   try {
-    const model = mode === 'scan' ? 'meta-llama/llama-4-scout-17b-16e-instruct' : 'llama-3.3-70b-versatile';
-
+    const model = mode==='scan' ? 'meta-llama/llama-4-scout-17b-16e-instruct' : 'llama-3.3-70b-versatile';
     const res = await fetch(GROQ_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
-      body: JSON.stringify({ model, messages, temperature: 0.7 })
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
+      body: JSON.stringify({model, messages, temperature:.7})
     });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error?.message || `Erreur ${res.status}`);
-    }
-
+    if (!res.ok) { const e=await res.json(); throw new Error(e.error?.message||`Erreur ${res.status}`); }
     const data = await res.json();
-    let text = data.choices[0].message.content.trim().replace(/```json|```/g, '').trim();
-    const fiche = JSON.parse(text);
-    fiche.id = Date.now();
-    fiche.date = new Date().toLocaleDateString('fr-FR');
-    fiche.mode = mode;
-    fiche.length = length;
-
-    fiches.unshift(fiche);
-    localStorage.setItem('revio_fiches', JSON.stringify(fiches));
-    renderFiches();
-
-    if (mode === 'import') document.getElementById('input-import').value = '';
-    if (mode === 'ia') document.getElementById('input-ia').value = '';
-    if (mode === 'scan') clearScan();
-
+    let txt = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
+    const f = JSON.parse(txt);
+    f.id = Date.now();
+    f.date = new Date().toLocaleDateString('fr-FR');
+    f.mode = mode; f.len = len;
+    f.nbPhotos = mode==='scan' ? photos.length : null;
+    fiches.unshift(f);
+    save(); renderAll();
+    // Reset
+    if(mode==='import'&&impTab==='text') document.getElementById('inp-text').value='';
+    if(mode==='ia') document.getElementById('inp-ia').value='';
+    if(mode==='scan'){ photos=[]; renderPhotos(); }
+    if(mode==='import'&&impTab==='file'){ fileText=null; document.getElementById('file-name').textContent=''; }
+    if(mode==='import'&&impTab==='pdf'){ pdfText=null; document.getElementById('pdf-name').textContent=''; }
   } catch(e) {
-    showErr('Erreur : ' + e.message);
+    showErr('Erreur : '+e.message);
   } finally {
-    btn.classList.remove('loading');
-    btn.disabled = false;
+    btn.classList.remove('loading'); btn.disabled=false;
   }
 }
 
-function buildPrompt(context, nbPoints) {
-  return `Tu es un professeur expert. ${context}. Génère une fiche de révision avec exactement ${nbPoints} points clés.
-
-Réponds UNIQUEMENT en JSON valide, sans texte autour :
-{
-  "titre": "Titre clair",
-  "resume": "Résumé en 2-3 phrases.",
-  "points_cles": ["Point 1", "Point 2"...],
-  "exemple": "Exemple concret ou application pratique."
-}`;
+function prompt(ctx, nb) {
+  return `Tu es un professeur expert. ${ctx}. Génère une fiche de révision avec exactement ${nb} points clés.\n\nRéponds UNIQUEMENT en JSON valide, sans texte autour :\n{"titre":"Titre clair","resume":"Résumé en 2-3 phrases.","points_cles":["Point 1","Point 2"],"exemple":"Exemple concret."}`;
 }
 
 function showErr(msg) {
-  const el = document.getElementById('err-msg');
-  el.textContent = msg;
-  el.classList.add('visible');
+  const el=document.getElementById('err'); el.textContent=msg; el.classList.add('on');
 }
 
-function supprimerFiche(id) {
-  fiches = fiches.filter(f => f.id !== id);
-  localStorage.setItem('revio_fiches', JSON.stringify(fiches));
-  renderFiches();
+// ── DOWNLOAD ──
+async function downloadFiche(id) {
+  const f = fiches.find(x=>x.id===id); if(!f) return;
+  const stage = document.getElementById('dl-stage');
+  const ml = {import:'Import',scan:'Scan',ia:'IA'};
+  stage.innerHTML = `
+    <div class="dl-card">
+      <div class="dl-header">
+        <div class="dl-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
+            <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            <path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="dl-logo-name">Revio</span>
+        <div class="dl-badges">
+          <span class="dl-badge dl-b1">${ml[f.mode]||'IA'}</span>
+          <span class="dl-badge dl-b2">${f.len||'moyenne'}</span>
+          ${f.nbPhotos?`<span class="dl-badge dl-b1">${f.nbPhotos} photo${f.nbPhotos>1?'s':''}</span>`:''}
+        </div>
+      </div>
+      <h1 class="dl-title">${esc(f.titre)}</h1>
+      <p class="dl-slabel">Résumé</p>
+      <p class="dl-resume">${esc(f.resume)}</p>
+      <p class="dl-slabel">Points clés</p>
+      <ul class="dl-points">${f.points_cles.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+      <p class="dl-slabel">Exemple</p>
+      <div class="dl-exemple">${esc(f.exemple)}</div>
+      <div class="dl-footer">
+        <span>Créé avec Revio — Fiches de révision IA</span>
+        <span>${f.date}</span>
+      </div>
+    </div>`;
+
+  // Temporairement visible pour html2canvas
+  stage.style.left = '-9999px';
+  stage.style.top = '0';
+  stage.style.display = 'block';
+
+  try {
+    const canvas = await html2canvas(stage, {
+      backgroundColor:'#0F0F18',
+      scale:2,
+      useCORS:true,
+      logging:false,
+    });
+    stage.style.left = '-9999px';
+    stage.style.top = '-9999px';
+
+    const link = document.createElement('a');
+    link.download = `revio-${f.titre.slice(0,30).replace(/\s+/g,'-').toLowerCase()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Erreur lors du téléchargement : '+e.message);
+  }
 }
 
-function toutEffacer() {
-  if (!confirm('Supprimer toutes les fiches ?')) return;
-  fiches = [];
-  localStorage.setItem('revio_fiches', JSON.stringify(fiches));
-  renderFiches();
+// ── CRUD ──
+function deleteFiche(id) {
+  fiches = fiches.filter(f=>f.id!==id); save(); renderAll();
 }
 
-function renderFiches() {
-  const grid = document.getElementById('fiches-grid');
-  const count = document.getElementById('fiches-count');
-  count.textContent = fiches.length + ' fiche' + (fiches.length > 1 ? 's' : '');
+function clearAll() {
+  if(!confirm('Supprimer toutes les fiches ?')) return;
+  fiches=[]; save(); renderAll();
+}
 
-  if (fiches.length === 0) {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-glyph">✦</div><p class="empty-text">Vos fiches apparaîtront ici.<br>Choisissez un mode et générez votre première fiche.</p></div>`;
+function save() { localStorage.setItem('revio_f', JSON.stringify(fiches)); }
+
+// ── RENDER ──
+function renderAll() {
+  const grid = document.getElementById('fgrid');
+  const count = document.getElementById('fcount');
+  count.textContent = fiches.length+' fiche'+(fiches.length>1?'s':'');
+  if (!fiches.length) {
+    grid.innerHTML=`<div class="empty"><div class="empty-mark">✦</div><p class="empty-t">Vos fiches apparaîtront ici.<br>Choisissez un mode et générez votre première fiche.</p></div>`;
     return;
   }
-
-  const modeLabel = { import: 'Import', scan: 'Scan', ia: 'IA' };
-  grid.innerHTML = fiches.map(f => `
+  const ml={import:'Import',scan:'Scan',ia:'IA'};
+  grid.innerHTML = fiches.map(f=>`
     <div class="fiche">
-      <div class="fiche-head">
-        <div>
-          <div class="fiche-meta">
-            <span>${f.date}</span>
-            <span class="fiche-tag">${modeLabel[f.mode] || 'IA'}</span>
-            <span class="fiche-tag">${f.length || 'moyenne'}</span>
+      <div class="fiche-inner">
+        <div class="fiche-top">
+          <div>
+            <div class="fiche-badges">
+              <span class="fbadge fbadge-mode">${ml[f.mode]||'IA'}</span>
+              <span class="fbadge fbadge-len">${f.len||'moyenne'}</span>
+              <span class="fbadge fbadge-date">${f.date}</span>
+              ${f.nbPhotos?`<span class="fbadge fbadge-photos">${f.nbPhotos} photo${f.nbPhotos>1?'s':''}</span>`:''}
+            </div>
+            <p class="fiche-title">${esc(f.titre)}</p>
           </div>
-          <p class="fiche-titre">${esc(f.titre)}</p>
+          <div class="fiche-actions">
+            <button class="faction" onclick="downloadFiche(${f.id})" title="Télécharger">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              PNG
+            </button>
+            <button class="faction del" onclick="deleteFiche(${f.id})" title="Supprimer">✕</button>
+          </div>
         </div>
-        <button class="fiche-del" onclick="supprimerFiche(${f.id})">✕</button>
+        <div class="fdivider"></div>
+        <p class="fsec-label">Résumé</p>
+        <p class="fresume">${esc(f.resume)}</p>
+        <p class="fsec-label">Points clés</p>
+        <ul class="fpoints">${f.points_cles.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+        <p class="fsec-label">Exemple</p>
+        <div class="fexemple">${esc(f.exemple)}</div>
       </div>
-      <div class="fiche-body">
-        <div class="fiche-section">
-          <p class="fiche-section-label">Résumé</p>
-          <p class="fiche-resume">${esc(f.resume)}</p>
-        </div>
-        <div class="fiche-section">
-          <p class="fiche-section-label">Points clés</p>
-          <ul class="fiche-points">${f.points_cles.map(p => `<li>${esc(p)}</li>`).join('')}</ul>
-        </div>
-        <div class="fiche-section">
-          <p class="fiche-section-label">Exemple</p>
-          <div class="fiche-exemple">${esc(f.exemple)}</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.key === 'Enter') genererFiche();
-});
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+document.addEventListener('keydown', e=>{ if(e.ctrlKey&&e.key==='Enter') generate(); });
 </script>
 </body>
 </html>
