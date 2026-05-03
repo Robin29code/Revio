@@ -4,214 +4,212 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Revio</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0A0A0F;
-  --s1:#111118;
-  --s2:#18181F;
-  --s3:#22222C;
-  --b1:#2A2A38;
-  --b2:#383848;
-  --t1:#F0EEF8;
-  --t2:#9896B0;
-  --t3:#4A4860;
-  --acc:#C8B8FF;
-  --acc2:#A090E8;
-  --gold:#F0C060;
-  --teal:#60D8C0;
-  --r:14px;
-  --rlg:20px;
+  --bg:#0A0A0F;--s1:#111118;--s2:#18181F;--s3:#22222C;
+  --b1:#2A2A38;--b2:#383848;
+  --t1:#F0EEF8;--t2:#9896B0;--t3:#4A4860;
+  --acc:#C8B8FF;--acc2:#A090E8;--teal:#60D8C0;--gold:#F0C060;
+  --r:14px;--rlg:20px;
 }
-
-html{scroll-behavior:smooth}
+html,body{height:100%}
 body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.022;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
 
-/* GRAIN */
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
+.glow{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(130px);opacity:.1;}
+.g1{width:700px;height:700px;background:var(--acc);top:-250px;left:-150px;}
+.g2{width:500px;height:500px;background:var(--teal);bottom:-150px;right:-100px;}
+.g3{width:300px;height:300px;background:var(--gold);top:40%;left:40%;opacity:.05;}
 
-/* GLOW BG */
-.glow{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(120px);opacity:.12;}
-.glow-1{width:600px;height:600px;background:var(--acc);top:-200px;left:-100px;}
-.glow-2{width:400px;height:400px;background:var(--teal);bottom:-100px;right:-100px;}
-
-#app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
-
-/* ── HEADER ── */
-.hdr{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.9rem 1.75rem;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  background:rgba(10,10,15,.7);
-  backdrop-filter:blur(20px) saturate(1.4);
-  position:sticky;top:0;z-index:100;
+/* ════════════════════════════
+   INTRO ANIMATION
+════════════════════════════ */
+#intro{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--bg);
+  transition:opacity .6s ease, visibility .6s ease;
 }
+#intro.hidden{opacity:0;visibility:hidden;pointer-events:none;}
 
-.hdr-logo{display:flex;align-items:center;gap:11px;text-decoration:none;}
-
-/* LOGO MARK — lettres R stylisées */
-.logo-mark{
-  width:34px;height:34px;
+.intro-logo{
+  display:flex;align-items:center;gap:14px;
+  animation:introLogo .8s cubic-bezier(.16,1,.3,1) both;
+}
+.intro-mark{
+  width:56px;height:56px;
   background:linear-gradient(135deg,var(--acc),var(--teal));
-  border-radius:9px;
+  border-radius:14px;
   display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  box-shadow:0 0 20px rgba(200,184,255,.3);
+  box-shadow:0 0 40px rgba(200,184,255,.35),0 0 80px rgba(96,216,192,.15);
 }
-.logo-mark svg{width:20px;height:20px;}
-
-.logo-name{
-  font-family:'Fraunces',serif;
-  font-size:1.25rem;
-  font-weight:700;
-  letter-spacing:-.03em;
-  background:linear-gradient(135deg,var(--t1),var(--t2));
+.intro-mark svg{width:30px;height:30px;}
+.intro-name{
+  font-family:'Fraunces',serif;font-size:3rem;font-weight:700;
+  letter-spacing:-.04em;
+  background:linear-gradient(135deg,var(--t1) 30%,var(--t2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
 
-.hdr-pill{
-  font-size:11px;font-weight:500;
-  color:var(--t3);
-  border:1px solid var(--b1);
-  border-radius:100px;
-  padding:4px 12px;
-  background:var(--s1);
+.intro-tagline{
+  margin-top:1rem;font-size:13px;color:var(--t3);
+  animation:introTag .8s .2s cubic-bezier(.16,1,.3,1) both;
+  letter-spacing:.02em;
 }
 
-/* ── LAYOUT ── */
-.layout{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:calc(100vh - 57px);}
-
-/* ── LEFT ── */
-.left{
-  border-right:1px solid rgba(255,255,255,.05);
-  padding:1.5rem;
-  display:flex;flex-direction:column;gap:1.25rem;
-  overflow-y:auto;
-  background:rgba(17,17,24,.4);
+.intro-bar{
+  width:120px;height:2px;
+  background:var(--s3);
+  border-radius:2px;
+  margin-top:2.5rem;
+  overflow:hidden;
+  animation:introFade .5s .3s both;
+}
+.intro-bar-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--acc),var(--teal));
+  border-radius:2px;
+  animation:introLoad 1.2s .4s cubic-bezier(.4,0,.2,1) forwards;
 }
 
-.slabel{
-  font-size:10px;font-weight:600;
-  letter-spacing:.1em;text-transform:uppercase;
-  color:var(--t3);margin-bottom:9px;
+.intro-particles{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
 }
+.particle{
+  position:absolute;width:2px;height:2px;
+  background:var(--acc);border-radius:50%;
+  animation:float linear infinite;
+  opacity:0;
+}
+
+@keyframes introLogo{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes introTag{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes introFade{from{opacity:0}to{opacity:1}}
+@keyframes introLoad{from{width:0%}to{width:100%}}
+@keyframes float{
+  0%{opacity:0;transform:translateY(0) scale(1)}
+  10%{opacity:.6}
+  90%{opacity:.2}
+  100%{opacity:0;transform:translateY(-600px) scale(.5)}
+}
+
+/* ════════════════════════════
+   APP
+════════════════════════════ */
+#app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;opacity:0;transition:opacity .5s ease;}
+#app.visible{opacity:1;}
+
+/* HEADER */
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1.75rem;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  background:rgba(10,10,15,.75);
+  backdrop-filter:blur(20px) saturate(1.5);
+  position:sticky;top:0;z-index:100;
+}
+.hdr-logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{
+  width:32px;height:32px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  /* Dégradé bleu-violet comme demandé */
+  background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);
+  box-shadow:0 0 16px rgba(123,111,255,.4);
+}
+.logo-mark svg{width:18px;height:18px;}
+.logo-name{
+  font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;
+  letter-spacing:-.03em;
+  background:linear-gradient(135deg,#A090FF,#C8B8FF,#60D8C0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hdr-pill{font-size:11px;font-weight:500;color:var(--t3);border:1px solid var(--b1);border-radius:100px;padding:3px 12px;background:var(--s1);}
+
+/* LAYOUT */
+.layout{flex:1;display:grid;grid-template-columns:380px 1fr;min-height:calc(100vh - 55px);}
+.left{border-right:1px solid rgba(255,255,255,.04);padding:1.5rem;display:flex;flex-direction:column;gap:1.2rem;overflow-y:auto;background:rgba(17,17,24,.5);}
+.right{padding:1.75rem;overflow-y:auto;}
+
+.slabel{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:9px;}
 
 /* MODE TABS */
 .mode-tabs{display:flex;background:var(--s2);border-radius:var(--r);padding:4px;gap:3px;}
-.mtab{
-  flex:1;background:none;border:none;
-  border-radius:10px;padding:9px 6px;
-  cursor:pointer;transition:background .15s,color .15s;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-}
-.mtab-icon{font-size:1.1rem;}
-.mtab-label{font-size:11px;font-weight:500;color:var(--t2);transition:color .15s;}
+.mtab{flex:1;background:none;border:none;border-radius:10px;padding:8px 4px;cursor:pointer;transition:background .15s;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.mtab-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
+.mtab-icon svg{width:18px;height:18px;transition:stroke .15s;}
+.mtab-label{font-size:11px;font-weight:500;color:var(--t2);font-family:'Geist',sans-serif;transition:color .15s;}
 .mtab.active{background:var(--s3);}
 .mtab.active .mtab-label{color:var(--t1);}
+.mtab.active .mtab-icon svg{stroke:var(--acc);}
 
 /* INPUT ZONES */
 .izone{display:none;}.izone.on{display:block;}
 
-/* TEXT AREA */
-.tinput{
-  width:100%;background:var(--s2);
-  border:1px solid var(--b1);border-radius:var(--r);
-  padding:12px 14px;
-  font-family:'Geist',sans-serif;font-size:13px;color:var(--t1);
-  outline:none;transition:border-color .15s;resize:vertical;min-height:100px;line-height:1.65;
-}
+/* TEXT INPUT */
+.tinput{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:12px 14px;font-family:'Geist',sans-serif;font-size:13px;color:var(--t1);outline:none;transition:border-color .15s;resize:vertical;min-height:100px;line-height:1.65;}
 .tinput:focus{border-color:var(--acc);}
 .tinput::placeholder{color:var(--t3);}
 
-/* UPLOAD ZONE */
-.upload-zone{
-  border:1px dashed var(--b2);border-radius:var(--r);
-  padding:1.5rem;text-align:center;cursor:pointer;
-  transition:border-color .2s,background .2s;
-  position:relative;overflow:hidden;
-  background:var(--s2);
-}
-.upload-zone:hover{border-color:var(--acc);background:rgba(200,184,255,.04);}
-.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
-.uz-icon{font-size:1.6rem;margin-bottom:8px;}
-.uz-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px;}
-.uz-sub{font-size:11px;color:var(--t3);}
-.uz-file{font-size:12px;color:var(--acc);margin-top:8px;font-weight:500;}
-
 /* IMPORT TABS */
 .imp-tabs{display:flex;gap:6px;margin-bottom:10px;}
-.itab{
-  flex:1;background:var(--s2);border:1px solid var(--b1);
-  border-radius:10px;padding:8px;text-align:center;
-  cursor:pointer;transition:border-color .15s,background .15s;
-}
+.itab{flex:1;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;}
 .itab.active{border-color:var(--acc);background:rgba(200,184,255,.06);}
-.itab-icon{font-size:1rem;display:block;margin-bottom:3px;}
+.itab-icon{width:20px;height:20px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;}
+.itab-icon svg{width:16px;height:16px;}
 .itab-label{font-size:11px;font-weight:500;color:var(--t2);}
 .itab.active .itab-label{color:var(--t1);}
 .isub{display:none;}.isub.on{display:block;}
 
-/* SCANNER */
-.scan-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-.scan-btn{
-  background:var(--s2);border:1px solid var(--b1);
-  border-radius:var(--r);padding:12px;text-align:center;
-  cursor:pointer;transition:border-color .15s,background .15s;
-  position:relative;overflow:hidden;
-}
+/* UPLOAD */
+.upload-zone{border:1px dashed var(--b2);border-radius:var(--r);padding:1.4rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden;background:var(--s2);}
+.upload-zone:hover{border-color:var(--acc);background:rgba(200,184,255,.04);}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
+.uz-icon{width:32px;height:32px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;}
+.uz-icon svg{width:28px;height:28px;}
+.uz-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:3px;}
+.uz-sub{font-size:11px;color:var(--t3);}
+.uz-file{font-size:12px;color:var(--acc);margin-top:8px;font-weight:500;}
+
+/* SCANNER — double bouton persistent */
+.scan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.scan-btn{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:14px 10px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative;overflow:hidden;}
 .scan-btn:hover{border-color:var(--b2);background:var(--s3);}
-.scan-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
-.scan-btn-icon{font-size:1.2rem;display:block;margin-bottom:4px;}
+.scan-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;width:100%;height:100%;}
+.scan-btn-icon{width:28px;height:28px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;}
+.scan-btn-icon svg{width:22px;height:22px;}
 .scan-btn-label{font-size:12px;font-weight:500;color:var(--t1);display:block;}
 .scan-btn-sub{font-size:10px;color:var(--t3);}
 
-.photos-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.photos-count{font-size:11px;color:var(--t2);}
-.photos-max{font-size:11px;color:var(--t3);}
+.photos-bar{display:flex;align-items:center;justify-content:space-between;margin:10px 0 8px;}
+.pcount{font-size:11px;color:var(--t2);}
+.pmax{font-size:11px;color:var(--t3);}
 .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
 .thumb{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:3/4;background:var(--s3);}
 .thumb img{width:100%;height:100%;object-fit:cover;}
-.thumb-n{position:absolute;bottom:4px;left:4px;background:rgba(10,10,15,.8);color:var(--acc);font-size:9px;padding:1px 5px;border-radius:3px;}
-.thumb-x{position:absolute;top:3px;right:3px;background:rgba(10,10,15,.8);border:none;color:var(--t2);font-size:10px;padding:2px 5px;border-radius:4px;cursor:pointer;line-height:1;}
+.thumb-n{position:absolute;bottom:4px;left:4px;background:rgba(10,10,15,.85);color:var(--acc);font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;}
+.thumb-x{position:absolute;top:3px;right:3px;background:rgba(10,10,15,.85);border:none;color:var(--t2);font-size:10px;padding:2px 5px;border-radius:4px;cursor:pointer;line-height:1;}
 .thumb-x:hover{color:#FF5555;}
-.add-more{
-  width:100%;background:none;border:1px dashed var(--b1);
-  border-radius:10px;padding:9px;
-  color:var(--t3);font-family:'Geist',sans-serif;font-size:12px;
-  cursor:pointer;transition:border-color .15s,color .15s;
-  position:relative;overflow:hidden;
-}
-.add-more:hover{border-color:var(--acc);color:var(--acc);}
-.add-more input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
 
 /* LENGTH */
 .len-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.lbtn{
-  background:var(--s2);border:1px solid var(--b1);
-  border-radius:var(--r);padding:11px 8px;text-align:center;
-  cursor:pointer;transition:border-color .15s,background .15s;
-}
+.lbtn{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:11px 8px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;}
 .lbtn:hover{border-color:var(--b2);}
 .lbtn.active{border-color:var(--acc);background:rgba(200,184,255,.06);}
 .lbtn-name{font-size:12px;font-weight:500;color:var(--t1);display:block;margin-bottom:2px;}
 .lbtn-sub{font-size:10px;color:var(--t3);}
 
 /* ERROR */
-.err{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25);border-radius:10px;padding:10px 13px;font-size:12px;color:#FF9090;display:none;line-height:1.5;}
+.err{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.22);border-radius:10px;padding:10px 13px;font-size:12px;color:#FF9090;display:none;line-height:1.5;}
 .err.on{display:block;}
 
 /* GEN BTN */
-.gbtn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;background:linear-gradient(135deg,var(--acc),var(--teal));
-  color:#0A0A0F;border:none;border-radius:var(--r);
-  padding:14px;font-family:'Geist',sans-serif;font-size:14px;font-weight:600;
-  cursor:pointer;letter-spacing:-.01em;
-  transition:opacity .15s,transform .1s;
-  box-shadow:0 4px 24px rgba(200,184,255,.2);
-}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);color:#0A0A0F;border:none;border-radius:var(--r);padding:14px;font-family:'Geist',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:-.01em;transition:opacity .15s,transform .1s;box-shadow:0 4px 28px rgba(123,111,255,.25);}
 .gbtn:hover{opacity:.9;}
 .gbtn:active{transform:scale(.99);}
 .gbtn:disabled{background:var(--s3);color:var(--t3);cursor:not-allowed;box-shadow:none;}
@@ -219,8 +217,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
 .gbtn.loading .gbtxt{display:none;}
 .gbtn.loading .spin{display:block;}
 
-/* ── RIGHT ── */
-.right{padding:1.75rem;overflow-y:auto;}
+/* RIGHT */
 .right-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
 .fcount{font-size:12px;color:var(--t3);}
 .clrbtn{background:none;border:1px solid var(--b1);border-radius:8px;padding:5px 12px;color:var(--t3);font-family:'Geist',sans-serif;font-size:11px;cursor:pointer;transition:border-color .15s,color .15s;}
@@ -228,161 +225,122 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
 
 /* EMPTY */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;color:var(--t3);gap:14px;}
-.empty-mark{font-size:2.5rem;opacity:.2;}
-.empty-t{font-size:14px;line-height:1.7;}
+.empty-mark{opacity:.15;}
+.empty-t{font-size:13px;line-height:1.7;}
 
-/* ── FICHES GRID ── */
+/* FICHES GRID */
 #fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;}
 
-/* ── FICHE CARD ── */
-.fiche{
-  background:var(--s1);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--rlg);
-  overflow:hidden;
-  animation:up .35s ease both;
-  transition:border-color .2s,transform .2s,box-shadow .2s;
-  cursor:default;
-}
-.fiche:hover{border-color:rgba(200,184,255,.2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+/* FICHE */
+.fiche{background:var(--s1);border:1px solid rgba(255,255,255,.055);border-radius:var(--rlg);overflow:hidden;animation:up .35s ease both;transition:border-color .2s,transform .2s,box-shadow .2s;}
+.fiche:hover{border-color:rgba(200,184,255,.18);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.45);}
+.finner{padding:1.4rem 1.5rem;}
 
-.fiche-inner{padding:1.4rem 1.5rem;}
+.ftop{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;}
+.fbadges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
+.fbadge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;border:1px solid transparent;}
+.fb-mode{background:rgba(200,184,255,.1);color:var(--acc);border-color:rgba(200,184,255,.2);}
+.fb-len{background:rgba(96,216,192,.08);color:var(--teal);border-color:rgba(96,216,192,.15);}
+.fb-date{background:rgba(240,192,96,.07);color:var(--gold);border-color:rgba(240,192,96,.15);}
+.fb-ph{background:rgba(200,184,255,.1);color:var(--acc);border-color:rgba(200,184,255,.2);}
 
-/* Fiche header */
-.fiche-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.1rem;}
-.fiche-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
-.fbadge{
-  font-size:10px;font-weight:500;
-  padding:2px 8px;border-radius:100px;
-  border:1px solid transparent;
-}
-.fbadge-mode{background:rgba(200,184,255,.1);color:var(--acc);border-color:rgba(200,184,255,.2);}
-.fbadge-len{background:rgba(96,216,192,.08);color:var(--teal);border-color:rgba(96,216,192,.15);}
-.fbadge-date{background:rgba(240,192,96,.08);color:var(--gold);border-color:rgba(240,192,96,.15);}
-.fbadge-photos{background:rgba(200,184,255,.1);color:var(--acc);border-color:rgba(200,184,255,.2);}
+.ftitle{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:500;line-height:1.3;letter-spacing:-.02em;color:var(--t1);}
 
-.fiche-title{
-  font-family:'Fraunces',serif;
-  font-size:1.15rem;font-weight:500;
-  line-height:1.3;letter-spacing:-.02em;
-  color:var(--t1);
-}
-
-.fiche-actions{display:flex;gap:6px;flex-shrink:0;}
-.faction{
-  background:var(--s2);border:1px solid var(--b1);
-  border-radius:8px;padding:6px 10px;
-  cursor:pointer;font-size:11px;font-weight:500;
-  color:var(--t2);font-family:'Geist',sans-serif;
-  transition:border-color .15s,color .15s,background .15s;
-  display:flex;align-items:center;gap:4px;
-}
+.factions{display:flex;gap:5px;flex-shrink:0;}
+.faction{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11px;font-weight:500;color:var(--t2);font-family:'Geist',sans-serif;transition:border-color .15s,color .15s,background .15s;display:flex;align-items:center;gap:4px;}
 .faction:hover{border-color:var(--acc);color:var(--acc);background:rgba(200,184,255,.05);}
 .faction.del:hover{border-color:#FF5555;color:#FF5555;background:rgba(255,85,85,.05);}
 
-/* Divider */
-.fdivider{height:1px;background:rgba(255,255,255,.05);margin:0 0 1.1rem;}
+.fdiv{height:1px;background:rgba(255,255,255,.05);margin:0 0 1rem;}
 
-/* Resume */
-.fsec-label{
-  font-size:9px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--t3);margin-bottom:7px;
-}
-.fresume{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:1.1rem;}
+/* SECTIONS FICHE */
+.fsec{margin-bottom:1rem;}
+.fsec:last-child{margin-bottom:0;}
+.fseclabel{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.fseclabel svg{width:11px;height:11px;opacity:.6;}
 
-/* Points */
-.fpoints{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.1rem;}
-.fpoints li{
-  font-size:13px;color:var(--t1);line-height:1.6;
-  padding-left:20px;position:relative;
-}
-.fpoints li::before{
-  content:'';
-  position:absolute;left:0;top:8px;
-  width:6px;height:6px;
-  background:linear-gradient(135deg,var(--acc),var(--teal));
-  border-radius:50%;
-}
+.fresume{font-size:13px;color:var(--t2);line-height:1.8;}
 
-/* Exemple */
-.fexemple{
-  background:linear-gradient(135deg,rgba(200,184,255,.05),rgba(96,216,192,.05));
-  border:1px solid rgba(200,184,255,.1);
-  border-radius:12px;
-  padding:12px 14px;
-  font-size:12px;color:var(--t2);line-height:1.7;
-  font-style:italic;
-}
+.fpoints{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.fpoints li{font-size:13px;color:var(--t1);line-height:1.6;padding-left:20px;position:relative;}
+.fpoints li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;background:linear-gradient(135deg,var(--acc),var(--teal));border-radius:50%;}
 
-/* ── DOWNLOAD PREVIEW (hidden off-screen) ── */
-#dl-stage{
-  position:fixed;
-  left:-9999px;top:-9999px;
-  width:680px;
-  background:#0F0F18;
-  border-radius:24px;
-  overflow:hidden;
-  font-family:'Geist',sans-serif;
-}
-.dl-card{padding:2.5rem;}
-.dl-header{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:2rem;
-  padding-bottom:1.25rem;
-  border-bottom:1px solid rgba(255,255,255,.07);
-}
-.dl-logo-mark{
-  width:28px;height:28px;
-  background:linear-gradient(135deg,#C8B8FF,#60D8C0);
-  border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-}
-.dl-logo-mark svg{width:16px;height:16px;}
-.dl-logo-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:#F0EEF8;}
+.fdefs{display:flex;flex-direction:column;gap:8px;}
+.fdef{background:var(--s2);border-left:2px solid var(--acc);border-radius:0 10px 10px 0;padding:10px 13px;}
+.fdef-term{font-size:12px;font-weight:600;color:var(--acc);margin-bottom:3px;}
+.fdef-desc{font-size:12px;color:var(--t2);line-height:1.6;}
+
+.fexemple{background:linear-gradient(135deg,rgba(200,184,255,.05),rgba(96,216,192,.04));border:1px solid rgba(200,184,255,.1);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.7;font-style:italic;}
+
+.fbilan{background:rgba(240,192,96,.05);border:1px solid rgba(240,192,96,.15);border-radius:12px;padding:12px 14px;font-size:12px;color:rgba(240,192,96,.9);line-height:1.7;}
+
+/* DOWNLOAD STAGE */
+#dl-stage{position:fixed;left:-9999px;top:0;width:700px;background:#0F0F18;border-radius:24px;overflow:hidden;font-family:'Geist',sans-serif;}
+.dl-inner{padding:2.5rem;}
+.dl-hdr{display:flex;align-items:center;gap:10px;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.dl-lm{width:28px;height:28px;background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.dl-lm svg{width:16px;height:16px;}
+.dl-ln{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;background:linear-gradient(135deg,#A090FF,#C8B8FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .dl-badges{display:flex;gap:6px;margin-left:auto;}
-.dl-badge{font-size:9px;font-weight:500;padding:2px 8px;border-radius:100px;}
+.dl-b{font-size:9px;font-weight:500;padding:2px 8px;border-radius:100px;}
 .dl-b1{background:rgba(200,184,255,.15);color:#C8B8FF;}
 .dl-b2{background:rgba(96,216,192,.1);color:#60D8C0;}
-.dl-title{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:500;color:#F0EEF8;line-height:1.25;letter-spacing:-.02em;margin-bottom:1.5rem;}
+.dl-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:500;color:#F0EEF8;line-height:1.25;letter-spacing:-.02em;margin-bottom:1.5rem;}
 .dl-slabel{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#4A4860;margin-bottom:8px;}
-.dl-resume{font-size:13px;color:#9896B0;line-height:1.8;margin-bottom:1.4rem;}
-.dl-points{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:1.4rem;}
-.dl-points li{font-size:13px;color:#F0EEF8;line-height:1.6;padding-left:20px;position:relative;}
-.dl-points li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;background:linear-gradient(135deg,#C8B8FF,#60D8C0);border-radius:50%;}
-.dl-exemple{background:rgba(200,184,255,.06);border:1px solid rgba(200,184,255,.12);border-radius:12px;padding:12px 14px;font-size:12px;color:#9896B0;line-height:1.7;font-style:italic;}
-.dl-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.05);font-size:10px;color:#4A4860;display:flex;align-items:center;justify-content:space-between;}
+.dl-resume{font-size:13px;color:#9896B0;line-height:1.8;margin-bottom:1.3rem;}
+.dl-points{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.3rem;}
+.dl-points li{font-size:13px;color:#F0EEF8;line-height:1.6;padding-left:18px;position:relative;}
+.dl-points li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;background:linear-gradient(135deg,#C8B8FF,#60D8C0);border-radius:50%;}
+.dl-defs{display:flex;flex-direction:column;gap:7px;margin-bottom:1.3rem;}
+.dl-def{background:#18181F;border-left:2px solid #C8B8FF;border-radius:0 8px 8px 0;padding:8px 12px;}
+.dl-def-term{font-size:11px;font-weight:600;color:#C8B8FF;margin-bottom:2px;}
+.dl-def-desc{font-size:11px;color:#9896B0;line-height:1.5;}
+.dl-exemple{background:rgba(200,184,255,.06);border:1px solid rgba(200,184,255,.12);border-radius:10px;padding:11px 13px;font-size:12px;color:#9896B0;line-height:1.7;font-style:italic;margin-bottom:1.3rem;}
+.dl-bilan{background:rgba(240,192,96,.05);border:1px solid rgba(240,192,96,.15);border-radius:10px;padding:11px 13px;font-size:12px;color:rgba(240,192,96,.85);line-height:1.7;margin-bottom:1.3rem;}
+.dl-footer{padding-top:1rem;border-top:1px solid rgba(255,255,255,.05);font-size:10px;color:#4A4860;display:flex;justify-content:space-between;}
 
-/* ANIMATIONS */
-@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
 
-/* SCROLLBAR */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
-
-/* ── MOBILE ── */
 @media(max-width:760px){
   .layout{grid-template-columns:1fr;}
-  .left{border-right:none;border-bottom:1px solid rgba(255,255,255,.05);}
+  .left{border-right:none;border-bottom:1px solid rgba(255,255,255,.04);padding:1rem;}
   .right{padding:1rem;}
   #fgrid{grid-template-columns:1fr;}
   .hdr{padding:.75rem 1rem;}
-  .left{padding:1rem;}
 }
 </style>
 </head>
 <body>
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
 
+<div class="glow g1"></div>
+<div class="glow g2"></div>
+<div class="glow g3"></div>
+
+<!-- ════ INTRO ════ -->
+<div id="intro">
+  <div class="intro-particles" id="particles"></div>
+  <div class="intro-logo">
+    <div class="intro-mark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
+        <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        <path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="intro-name">Revio</span>
+  </div>
+  <p class="intro-tagline">Fiches de révision propulsées par l'IA</p>
+  <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+</div>
+
+<!-- ════ APP ════ -->
 <div id="app">
 
-<!-- HEADER -->
 <header class="hdr">
   <div class="hdr-logo">
     <div class="logo-mark">
-      <!-- Logo R stylisé -->
       <svg viewBox="0 0 24 24" fill="none">
         <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
         <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
@@ -396,23 +354,42 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
 
 <div class="layout">
 
-<!-- ── LEFT PANEL ── -->
+<!-- LEFT -->
 <div class="left">
 
-  <!-- MODE -->
   <div>
     <p class="slabel">Mode</p>
     <div class="mode-tabs">
+      <!-- Import -->
       <button class="mtab active" onclick="setMode('import')" id="mt-import">
-        <span class="mtab-icon">📄</span>
+        <div class="mtab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
         <span class="mtab-label">Importer</span>
       </button>
+      <!-- Scan -->
       <button class="mtab" onclick="setMode('scan')" id="mt-scan">
-        <span class="mtab-icon">📷</span>
+        <div class="mtab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
         <span class="mtab-label">Scanner</span>
       </button>
+      <!-- IA -->
       <button class="mtab" onclick="setMode('ia')" id="mt-ia">
-        <span class="mtab-icon">✦</span>
+        <div class="mtab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
         <span class="mtab-label">IA libre</span>
       </button>
     </div>
@@ -420,18 +397,31 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
 
   <!-- IMPORT ZONE -->
   <div id="z-import" class="izone on">
-    <p class="slabel">Source du cours</p>
+    <p class="slabel">Source</p>
     <div class="imp-tabs">
       <div class="itab active" onclick="setImpTab('text')" id="it-text">
-        <span class="itab-icon">✏️</span>
+        <div class="itab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round">
+            <line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/>
+          </svg>
+        </div>
         <span class="itab-label">Coller</span>
       </div>
       <div class="itab" onclick="setImpTab('file')" id="it-file">
-        <span class="itab-icon">📁</span>
+        <div class="itab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+          </svg>
+        </div>
         <span class="itab-label">Fichier</span>
       </div>
       <div class="itab" onclick="setImpTab('pdf')" id="it-pdf">
-        <span class="itab-icon">📕</span>
+        <div class="itab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            <path d="M9 15h1a2 2 0 0 0 0-4H9v6"/><path d="M14 15h2"/><path d="M14 12h2"/>
+          </svg>
+        </div>
         <span class="itab-label">PDF</span>
       </div>
     </div>
@@ -441,16 +431,16 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
     <div id="is-file" class="isub">
       <div class="upload-zone" onclick="document.getElementById('inp-file').click()">
         <input type="file" id="inp-file" accept=".txt,.doc,.docx,.md" onchange="handleTextFile(this)">
-        <div class="uz-icon">📁</div>
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         <p class="uz-title">Glissez ou cliquez</p>
-        <p class="uz-sub">.txt, .md, .doc, .docx</p>
+        <p class="uz-sub">.txt · .md · .doc · .docx</p>
         <p class="uz-file" id="file-name"></p>
       </div>
     </div>
     <div id="is-pdf" class="isub">
       <div class="upload-zone" onclick="document.getElementById('inp-pdf').click()">
         <input type="file" id="inp-pdf" accept=".pdf,application/pdf" onchange="handlePDF(this)">
-        <div class="uz-icon">📕</div>
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h1a2 2 0 0 0 0-4H9v6"/></svg></div>
         <p class="uz-title">Glissez ou cliquez</p>
         <p class="uz-sub">Fichier PDF de votre cours</p>
         <p class="uz-file" id="pdf-name"></p>
@@ -461,57 +451,56 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
   <!-- SCAN ZONE -->
   <div id="z-scan" class="izone">
     <p class="slabel">Photos du cahier</p>
-    <div id="scan-init">
-      <div class="scan-btns">
-        <div class="scan-btn">
-          <input type="file" accept="image/*" capture="environment" onchange="addPhotos(this)">
-          <span class="scan-btn-icon">📷</span>
-          <span class="scan-btn-label">Appareil photo</span>
-          <span class="scan-btn-sub">Prendre une photo</span>
+    <!-- Les deux boutons sont TOUJOURS visibles -->
+    <div class="scan-grid" style="margin-bottom:10px;">
+      <div class="scan-btn">
+        <input type="file" accept="image/*" capture="environment" onchange="addPhotos(this)">
+        <div class="scan-btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+            <circle cx="12" cy="13" r="1.5" fill="var(--acc)" stroke="none"/>
+          </svg>
         </div>
-        <div class="scan-btn">
-          <input type="file" accept="image/*" multiple onchange="addPhotos(this)">
-          <span class="scan-btn-icon">🖼️</span>
-          <span class="scan-btn-label">Galerie</span>
-          <span class="scan-btn-sub">Plusieurs images</span>
+        <span class="scan-btn-label">Appareil photo</span>
+        <span class="scan-btn-sub">Prendre une photo</span>
+      </div>
+      <div class="scan-btn">
+        <input type="file" accept="image/*" multiple onchange="addPhotos(this)">
+        <div class="scan-btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
         </div>
+        <span class="scan-btn-label">Galerie</span>
+        <span class="scan-btn-sub">Plusieurs photos</span>
       </div>
     </div>
-    <div id="scan-loaded" style="display:none">
+    <!-- Miniatures -->
+    <div id="thumbs-wrap" style="display:none">
       <div class="photos-bar">
-        <span class="photos-count" id="pcount">0 photo</span>
-        <span class="photos-max">10 max</span>
+        <span class="pcount" id="pcount">0 photo</span>
+        <span class="pmax">10 max</span>
       </div>
       <div class="thumbs" id="thumbs"></div>
-      <button class="add-more" id="add-more-btn" style="display:none">
-        <input type="file" accept="image/*" multiple onchange="addPhotos(this)">
-        + Ajouter des photos
-      </button>
     </div>
   </div>
 
   <!-- IA ZONE -->
   <div id="z-ia" class="izone">
     <p class="slabel">Sujet à réviser</p>
-    <textarea class="tinput" id="inp-ia" placeholder="Ex : La photosynthèse&#10;Ex : La Révolution française&#10;Ex : Le théorème de Pythagore"></textarea>
+    <textarea class="tinput" id="inp-ia" placeholder="Ex : La photosynthèse&#10;Ex : La Révolution française&#10;Ex : Le théorème de Pythagore&#10;Ex : Les bases du droit pénal"></textarea>
   </div>
 
   <!-- LENGTH -->
   <div>
-    <p class="slabel">Longueur de la fiche</p>
+    <p class="slabel">Longueur</p>
     <div class="len-grid">
-      <button class="lbtn" onclick="setLen('courte')" id="lb-courte">
-        <span class="lbtn-name">Courte</span>
-        <span class="lbtn-sub">3 points</span>
-      </button>
-      <button class="lbtn active" onclick="setLen('moyenne')" id="lb-moyenne">
-        <span class="lbtn-name">Moyenne</span>
-        <span class="lbtn-sub">5 points</span>
-      </button>
-      <button class="lbtn" onclick="setLen('longue')" id="lb-longue">
-        <span class="lbtn-name">Longue</span>
-        <span class="lbtn-sub">8 points</span>
-      </button>
+      <button class="lbtn" onclick="setLen('courte')" id="lb-courte"><span class="lbtn-name">Courte</span><span class="lbtn-sub">3 points</span></button>
+      <button class="lbtn active" onclick="setLen('moyenne')" id="lb-moyenne"><span class="lbtn-name">Moyenne</span><span class="lbtn-sub">5 points</span></button>
+      <button class="lbtn" onclick="setLen('longue')" id="lb-longue"><span class="lbtn-name">Longue</span><span class="lbtn-sub">8 points</span></button>
     </div>
   </div>
 
@@ -524,7 +513,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
 
 </div>
 
-<!-- ── RIGHT PANEL ── -->
+<!-- RIGHT -->
 <div class="right">
   <div class="right-hdr">
     <span class="fcount" id="fcount">0 fiche</span>
@@ -532,29 +521,66 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;op
   </div>
   <div id="fgrid">
     <div class="empty" id="empty">
-      <div class="empty-mark">✦</div>
-      <p class="empty-t">Vos fiches apparaîtront ici.<br>Choisissez un mode et générez votre première fiche.</p>
+      <div class="empty-mark">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <p class="empty-t">Vos fiches apparaîtront ici.<br>Elles sont sauvegardées jusqu'à suppression.</p>
     </div>
   </div>
 </div>
 
-</div><!-- /layout -->
+</div>
 </div><!-- /app -->
 
-<!-- DOWNLOAD STAGE (off-screen render) -->
+<!-- DOWNLOAD STAGE -->
 <div id="dl-stage"></div>
 
 <script>
+// ════ CONFIG ════
 const GROQ_KEY = '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';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MAX_PH = 10;
 
+// ════ INTRO ════
+function makeParticles() {
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const colors = ['#C8B8FF','#7B6FFF','#60D8C0','#F0C060'];
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${50 + Math.random()*50}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${1+Math.random()*2}px;
+      height:${1+Math.random()*2}px;
+      animation-duration:${2+Math.random()*4}s;
+      animation-delay:${Math.random()*1.5}s;
+    `;
+    c.appendChild(p);
+  }
+}
+makeParticles();
+
+// Lancer l'app après l'intro
+setTimeout(() => {
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+}, 2000);
+
+// ════ STATE ════
 let mode = 'import', impTab = 'text', len = 'moyenne';
 let photos = [], fileText = null, pdfText = null;
-let fiches = JSON.parse(localStorage.getItem('revio_f') || '[]');
+// Fiches persistent — chargées depuis localStorage
+let fiches = JSON.parse(localStorage.getItem('revio_fiches') || '[]');
 renderAll();
 
-// ── MODE ──
+// ════ MODE ════
 function setMode(m) {
   mode = m;
   ['import','scan','ia'].forEach(id => {
@@ -563,7 +589,7 @@ function setMode(m) {
   });
 }
 
-// ── IMPORT TABS ──
+// ════ IMP TAB ════
 function setImpTab(t) {
   impTab = t;
   ['text','file','pdf'].forEach(id => {
@@ -572,7 +598,7 @@ function setImpTab(t) {
   });
 }
 
-// ── LENGTH ──
+// ════ LENGTH ════
 function setLen(l) {
   len = l;
   ['courte','moyenne','longue'].forEach(id => {
@@ -580,52 +606,42 @@ function setLen(l) {
   });
 }
 
-// ── FILE HANDLING ──
+// ════ FILE HANDLING ════
 function handleTextFile(input) {
-  const file = input.files[0]; if (!file) return;
-  document.getElementById('file-name').textContent = file.name;
-  const r = new FileReader();
-  r.onload = e => { fileText = e.target.result; };
-  r.readAsText(file);
+  const f = input.files[0]; if(!f) return;
+  document.getElementById('file-name').textContent = f.name;
+  new FileReader().onload = e => fileText = e.target.result;
+  const r = new FileReader(); r.onload = e => fileText = e.target.result; r.readAsText(f);
 }
-
 function handlePDF(input) {
-  const file = input.files[0]; if (!file) return;
-  document.getElementById('pdf-name').textContent = file.name;
-  // Read as base64 for vision model
-  const r = new FileReader();
-  r.onload = e => { pdfText = e.target.result; };
-  r.readAsDataURL(file);
+  const f = input.files[0]; if(!f) return;
+  document.getElementById('pdf-name').textContent = f.name;
+  const r = new FileReader(); r.onload = e => pdfText = e.target.result; r.readAsDataURL(f);
 }
 
-// ── PHOTOS ──
+// ════ PHOTOS ════
 function addPhotos(input) {
   const files = Array.from(input.files);
   const rem = MAX_PH - photos.length;
+  if(files.length > rem) showErr(`Maximum ${MAX_PH} photos. ${files.length-rem} ignorée(s).`);
   const toAdd = files.slice(0, rem);
-  if (files.length > rem) showErr(`Maximum ${MAX_PH} photos.`);
   let loaded = 0;
   toAdd.forEach(f => {
     const r = new FileReader();
-    r.onload = e => { photos.push({b64: e.target.result}); if(++loaded===toAdd.length) renderPhotos(); };
+    r.onload = e => { photos.push({b64:e.target.result}); if(++loaded===toAdd.length) renderPhotos(); };
     r.readAsDataURL(f);
   });
   input.value = '';
 }
-
 function removePhoto(i) { photos.splice(i,1); renderPhotos(); }
-
 function renderPhotos() {
-  const init = document.getElementById('scan-init');
-  const loaded = document.getElementById('scan-loaded');
+  const wrap = document.getElementById('thumbs-wrap');
   const thumbs = document.getElementById('thumbs');
   const pcount = document.getElementById('pcount');
-  const addMore = document.getElementById('add-more-btn');
-  if (!photos.length) { init.style.display=''; loaded.style.display='none'; return; }
-  init.style.display='none'; loaded.style.display='block';
-  pcount.textContent = photos.length + ' photo'+(photos.length>1?'s':'');
-  addMore.style.display = photos.length < MAX_PH ? 'block':'none';
-  thumbs.innerHTML = photos.map((p,i) => `
+  if(!photos.length){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  pcount.textContent = photos.length+' photo'+(photos.length>1?'s':'');
+  thumbs.innerHTML = photos.map((p,i)=>`
     <div class="thumb">
       <img src="${p.b64}" alt="${i+1}">
       <span class="thumb-n">${i+1}</span>
@@ -633,7 +649,7 @@ function renderPhotos() {
     </div>`).join('');
 }
 
-// ── GENERATE ──
+// ════ GENERATE ════
 async function generate() {
   const errEl = document.getElementById('err');
   const btn = document.getElementById('gbtn');
@@ -642,28 +658,26 @@ async function generate() {
   let messages = [];
 
   if (mode === 'import') {
-    let content = '';
-    if (impTab === 'text') {
-      content = document.getElementById('inp-text').value.trim();
-      if (!content) { showErr('Collez le texte de votre cours.'); return; }
-      messages = [{role:'user', content: prompt(`À partir de ce cours :\n\n${content}`, nb)}];
-    } else if (impTab === 'file') {
-      if (!fileText) { showErr('Choisissez un fichier texte.'); return; }
-      messages = [{role:'user', content: prompt(`À partir de ce cours :\n\n${fileText.slice(0,8000)}`, nb)}];
+    if (impTab==='text') {
+      const txt = document.getElementById('inp-text').value.trim();
+      if(!txt){ showErr('Collez le texte de votre cours.'); return; }
+      messages = [{role:'user', content: buildPrompt(`Voici le texte du cours :\n\n${txt}`, nb)}];
+    } else if (impTab==='file') {
+      if(!fileText){ showErr('Choisissez un fichier texte.'); return; }
+      messages = [{role:'user', content: buildPrompt(`Voici le texte du cours :\n\n${fileText.slice(0,8000)}`, nb)}];
     } else {
-      if (!pdfText) { showErr('Choisissez un fichier PDF.'); return; }
-      // Send as image to vision model if it's a data URL image, else as text prompt
-      messages = [{role:'user', content: prompt('Analyse ce document PDF et génère une fiche de révision', nb) + '\n\n[PDF importé — synthétise le contenu du cours]'}];
+      if(!pdfText){ showErr('Choisissez un fichier PDF.'); return; }
+      messages = [{role:'user', content: buildPrompt('Analyse ce cours PDF et génère une fiche de révision complète', nb)}];
     }
-  } else if (mode === 'scan') {
-    if (!photos.length) { showErr('Ajoutez au moins une photo.'); return; }
-    const content = photos.map(p => ({type:'image_url',image_url:{url:p.b64}}));
-    content.push({type:'text', text: prompt(`À partir de ces ${photos.length} page(s) de cours (lis l'écriture manuscrite page par page dans l'ordre)`, nb)});
+  } else if (mode==='scan') {
+    if(!photos.length){ showErr('Ajoutez au moins une photo.'); return; }
+    const content = photos.map(p=>({type:'image_url',image_url:{url:p.b64}}));
+    content.push({type:'text', text: buildPrompt(`Lis attentivement l'écriture manuscrite ou imprimée visible sur ces ${photos.length} page(s) de cours, dans l'ordre, et génère une fiche de révision complète`, nb)});
     messages = [{role:'user', content}];
   } else {
     const s = document.getElementById('inp-ia').value.trim();
-    if (!s) { showErr('Décrivez le sujet à réviser.'); return; }
-    messages = [{role:'user', content: prompt(`Sur le sujet : "${s}"`, nb)}];
+    if(!s){ showErr('Décrivez le sujet à réviser.'); return; }
+    messages = [{role:'user', content: buildPrompt(`Sujet à réviser : "${s}"`, nb)}];
   }
 
   btn.classList.add('loading'); btn.disabled = true;
@@ -672,11 +686,14 @@ async function generate() {
     const res = await fetch(GROQ_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
-      body: JSON.stringify({model, messages, temperature:.7})
+      body: JSON.stringify({model, messages, temperature:.65, max_tokens:2000})
     });
-    if (!res.ok) { const e=await res.json(); throw new Error(e.error?.message||`Erreur ${res.status}`); }
+    if(!res.ok){ const e=await res.json(); throw new Error(e.error?.message||`Erreur ${res.status}`); }
     const data = await res.json();
     let txt = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
+    // Extract JSON robustly
+    const start = txt.indexOf('{'); const end = txt.lastIndexOf('}');
+    if(start!==-1 && end!==-1) txt = txt.slice(start, end+1);
     const f = JSON.parse(txt);
     f.id = Date.now();
     f.date = new Date().toLocaleDateString('fr-FR');
@@ -697,128 +714,162 @@ async function generate() {
   }
 }
 
-function prompt(ctx, nb) {
-  return `Tu es un professeur expert. ${ctx}. Génère une fiche de révision avec exactement ${nb} points clés.\n\nRéponds UNIQUEMENT en JSON valide, sans texte autour :\n{"titre":"Titre clair","resume":"Résumé en 2-3 phrases.","points_cles":["Point 1","Point 2"],"exemple":"Exemple concret."}`;
+// ════ PROMPT AMÉLIORÉ ════
+function buildPrompt(ctx, nb) {
+  return `Tu es un professeur expert en pédagogie. ${ctx}.
+
+Génère une fiche de révision COMPLÈTE et STRUCTURÉE avec exactement ${nb} points clés principaux.
+
+RÈGLES IMPORTANTES :
+- Si le sujet contient des termes techniques ou des mots clés importants, fournis une section "definitions"
+- Fournis toujours une section "bilan" avec une synthèse finale de 2-3 phrases
+- Les points clés doivent être clairs, précis et mémorables
+- Le résumé doit accrocher et donner envie de lire
+- L'exemple doit être concret, du quotidien, facile à retenir
+
+Réponds UNIQUEMENT en JSON valide, sans texte autour, sans commentaire :
+{
+  "titre": "Titre clair et accrocheur",
+  "resume": "Résumé introductif en 2-3 phrases claires.",
+  "points_cles": ["Point clé 1 complet", "Point clé 2 complet", "..."],
+  "definitions": [
+    {"terme": "Mot clé", "definition": "Définition claire et concise."}
+  ],
+  "exemple": "Un exemple concret, simple et mémorable.",
+  "bilan": "Synthèse finale en 2-3 phrases qui résume l'essentiel à retenir."
+}
+
+Note: si aucune définition n'est nécessaire, mets "definitions" à [].`;
 }
 
 function showErr(msg) {
   const el=document.getElementById('err'); el.textContent=msg; el.classList.add('on');
 }
 
-// ── DOWNLOAD ──
+// ════ DOWNLOAD ════
 async function downloadFiche(id) {
   const f = fiches.find(x=>x.id===id); if(!f) return;
+  const ml={import:'Import',scan:'Scan',ia:'IA'};
   const stage = document.getElementById('dl-stage');
-  const ml = {import:'Import',scan:'Scan',ia:'IA'};
-  stage.innerHTML = `
-    <div class="dl-card">
-      <div class="dl-header">
-        <div class="dl-logo-mark">
-          <svg viewBox="0 0 24 24" fill="none">
-            <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
-            <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
-            <path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <span class="dl-logo-name">Revio</span>
-        <div class="dl-badges">
-          <span class="dl-badge dl-b1">${ml[f.mode]||'IA'}</span>
-          <span class="dl-badge dl-b2">${f.len||'moyenne'}</span>
-          ${f.nbPhotos?`<span class="dl-badge dl-b1">${f.nbPhotos} photo${f.nbPhotos>1?'s':''}</span>`:''}
-        </div>
-      </div>
-      <h1 class="dl-title">${esc(f.titre)}</h1>
-      <p class="dl-slabel">Résumé</p>
-      <p class="dl-resume">${esc(f.resume)}</p>
-      <p class="dl-slabel">Points clés</p>
-      <ul class="dl-points">${f.points_cles.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
-      <p class="dl-slabel">Exemple</p>
-      <div class="dl-exemple">${esc(f.exemple)}</div>
-      <div class="dl-footer">
-        <span>Créé avec Revio — Fiches de révision IA</span>
-        <span>${f.date}</span>
-      </div>
-    </div>`;
+  const defsHtml = f.definitions&&f.definitions.length ? `
+    <p class="dl-slabel">Définitions</p>
+    <div class="dl-defs">${f.definitions.map(d=>`<div class="dl-def"><div class="dl-def-term">${esc(d.terme)}</div><div class="dl-def-desc">${esc(d.definition)}</div></div>`).join('')}</div>
+  ` : '';
+  const bilanHtml = f.bilan ? `<p class="dl-slabel">Bilan & Synthèse</p><div class="dl-bilan">${esc(f.bilan)}</div>` : '';
 
-  // Temporairement visible pour html2canvas
-  stage.style.left = '-9999px';
-  stage.style.top = '0';
-  stage.style.display = 'block';
+  stage.innerHTML = `<div class="dl-inner">
+    <div class="dl-hdr">
+      <div class="dl-lm"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/><path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/><path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+      <span class="dl-ln">Revio</span>
+      <div class="dl-badges"><span class="dl-b dl-b1">${ml[f.mode]||'IA'}</span><span class="dl-b dl-b2">${f.len||'moyenne'}</span></div>
+    </div>
+    <h1 class="dl-title">${esc(f.titre)}</h1>
+    <p class="dl-slabel">Résumé</p>
+    <p class="dl-resume">${esc(f.resume)}</p>
+    <p class="dl-slabel">Points clés</p>
+    <ul class="dl-points">${(f.points_cles||[]).map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+    ${defsHtml}
+    <p class="dl-slabel">Exemple</p>
+    <div class="dl-exemple">${esc(f.exemple)}</div>
+    ${bilanHtml}
+    <div class="dl-footer"><span>Revio — Fiches de révision IA</span><span>${f.date}</span></div>
+  </div>`;
 
+  stage.style.cssText = 'position:fixed;left:-9999px;top:0;width:700px;background:#0F0F18;border-radius:24px;overflow:hidden;font-family:Geist,sans-serif;display:block;';
   try {
-    const canvas = await html2canvas(stage, {
-      backgroundColor:'#0F0F18',
-      scale:2,
-      useCORS:true,
-      logging:false,
-    });
-    stage.style.left = '-9999px';
-    stage.style.top = '-9999px';
-
+    const canvas = await html2canvas(stage, {backgroundColor:'#0F0F18',scale:2,useCORS:true,logging:false});
+    stage.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
     const link = document.createElement('a');
-    link.download = `revio-${f.titre.slice(0,30).replace(/\s+/g,'-').toLowerCase()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  } catch(e) {
-    alert('Erreur lors du téléchargement : '+e.message);
-  }
+    link.download = `revio-${(f.titre||'fiche').slice(0,30).replace(/\s+/g,'-').toLowerCase()}.png`;
+    link.href = canvas.toDataURL('image/png'); link.click();
+  } catch(e) { alert('Erreur téléchargement : '+e.message); }
 }
 
-// ── CRUD ──
-function deleteFiche(id) {
-  fiches = fiches.filter(f=>f.id!==id); save(); renderAll();
-}
+// ════ CRUD ════
+function deleteFiche(id) { fiches=fiches.filter(f=>f.id!==id); save(); renderAll(); }
+function clearAll() { if(!confirm('Supprimer toutes les fiches ?')) return; fiches=[]; save(); renderAll(); }
+function save() { localStorage.setItem('revio_fiches', JSON.stringify(fiches)); }
 
-function clearAll() {
-  if(!confirm('Supprimer toutes les fiches ?')) return;
-  fiches=[]; save(); renderAll();
-}
-
-function save() { localStorage.setItem('revio_f', JSON.stringify(fiches)); }
-
-// ── RENDER ──
+// ════ RENDER ════
 function renderAll() {
   const grid = document.getElementById('fgrid');
   const count = document.getElementById('fcount');
   count.textContent = fiches.length+' fiche'+(fiches.length>1?'s':'');
-  if (!fiches.length) {
-    grid.innerHTML=`<div class="empty"><div class="empty-mark">✦</div><p class="empty-t">Vos fiches apparaîtront ici.<br>Choisissez un mode et générez votre première fiche.</p></div>`;
+  if(!fiches.length){
+    grid.innerHTML=`<div class="empty"><div class="empty-mark"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><p class="empty-t">Vos fiches apparaîtront ici.<br>Elles sont sauvegardées jusqu'à suppression.</p></div>`;
     return;
   }
   const ml={import:'Import',scan:'Scan',ia:'IA'};
-  grid.innerHTML = fiches.map(f=>`
-    <div class="fiche">
-      <div class="fiche-inner">
-        <div class="fiche-top">
+
+  grid.innerHTML = fiches.map(f => {
+    const defsHtml = f.definitions&&f.definitions.length ? `
+      <div class="fsec">
+        <p class="fseclabel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Définitions
+        </p>
+        <div class="fdefs">${f.definitions.map(d=>`<div class="fdef"><div class="fdef-term">${esc(d.terme)}</div><div class="fdef-desc">${esc(d.definition)}</div></div>`).join('')}</div>
+      </div>` : '';
+
+    const bilanHtml = f.bilan ? `
+      <div class="fsec">
+        <p class="fseclabel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Bilan & Synthèse
+        </p>
+        <div class="fbilan">${esc(f.bilan)}</div>
+      </div>` : '';
+
+    return `<div class="fiche">
+      <div class="finner">
+        <div class="ftop">
           <div>
-            <div class="fiche-badges">
-              <span class="fbadge fbadge-mode">${ml[f.mode]||'IA'}</span>
-              <span class="fbadge fbadge-len">${f.len||'moyenne'}</span>
-              <span class="fbadge fbadge-date">${f.date}</span>
-              ${f.nbPhotos?`<span class="fbadge fbadge-photos">${f.nbPhotos} photo${f.nbPhotos>1?'s':''}</span>`:''}
+            <div class="fbadges">
+              <span class="fbadge fb-mode">${ml[f.mode]||'IA'}</span>
+              <span class="fbadge fb-len">${f.len||'moyenne'}</span>
+              <span class="fbadge fb-date">${f.date}</span>
+              ${f.nbPhotos?`<span class="fbadge fb-ph">${f.nbPhotos}p</span>`:''}
             </div>
-            <p class="fiche-title">${esc(f.titre)}</p>
+            <p class="ftitle">${esc(f.titre)}</p>
           </div>
-          <div class="fiche-actions">
-            <button class="faction" onclick="downloadFiche(${f.id})" title="Télécharger">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <div class="factions">
+            <button class="faction" onclick="downloadFiche(${f.id})">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               PNG
             </button>
-            <button class="faction del" onclick="deleteFiche(${f.id})" title="Supprimer">✕</button>
+            <button class="faction del" onclick="deleteFiche(${f.id})">✕</button>
           </div>
         </div>
-        <div class="fdivider"></div>
-        <p class="fsec-label">Résumé</p>
-        <p class="fresume">${esc(f.resume)}</p>
-        <p class="fsec-label">Points clés</p>
-        <ul class="fpoints">${f.points_cles.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
-        <p class="fsec-label">Exemple</p>
-        <div class="fexemple">${esc(f.exemple)}</div>
+        <div class="fdiv"></div>
+        <div class="fsec">
+          <p class="fseclabel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Résumé
+          </p>
+          <p class="fresume">${esc(f.resume)}</p>
+        </div>
+        <div class="fsec">
+          <p class="fseclabel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Points clés
+          </p>
+          <ul class="fpoints">${(f.points_cles||[]).map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+        </div>
+        ${defsHtml}
+        <div class="fsec">
+          <p class="fseclabel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Exemple
+          </p>
+          <div class="fexemple">${esc(f.exemple)}</div>
+        </div>
+        ${bilanHtml}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 document.addEventListener('keydown', e=>{ if(e.ctrlKey&&e.key==='Enter') generate(); });
 </script>
 </body>
