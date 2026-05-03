@@ -299,6 +299,40 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .dl-bilan{background:rgba(240,192,96,.05);border:1px solid rgba(240,192,96,.15);border-radius:10px;padding:11px 13px;font-size:12px;color:rgba(240,192,96,.85);line-height:1.7;margin-bottom:1.3rem;}
 .dl-footer{padding-top:1rem;border-top:1px solid rgba(255,255,255,.05);font-size:10px;color:#4A4860;display:flex;justify-content:space-between;}
 
+/* WELCOME MODAL */
+#welcome{
+  position:fixed;inset:0;z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;
+  background:rgba(10,10,15,.7);
+  backdrop-filter:blur(16px);
+  opacity:0;visibility:hidden;
+  transition:opacity .4s ease, visibility .4s ease;
+}
+#welcome.show{opacity:1;visibility:visible;}
+.welcome-card{
+  background:var(--s1);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--rlg);
+  padding:2rem 2.25rem;
+  max-width:420px;width:100%;
+  text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+  animation:up .4s cubic-bezier(.16,1,.3,1) both;
+}
+.welcome-emoji{font-size:1.8rem;margin-bottom:1rem;display:block;}
+.welcome-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:500;letter-spacing:-.02em;margin-bottom:.9rem;color:var(--t1);}
+.welcome-text{font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:1.5rem;}
+.welcome-btn{
+  background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);
+  color:#0A0A0F;border:none;border-radius:10px;
+  padding:11px 28px;
+  font-family:'Geist',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;transition:opacity .15s;
+  box-shadow:0 4px 20px rgba(123,111,255,.2);
+}
+.welcome-btn:hover{opacity:.9;}
+
 @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
@@ -537,6 +571,24 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 </div>
 </div><!-- /app -->
 
+<!-- WELCOME -->
+<div id="welcome">
+  <div class="welcome-card">
+    <span class="welcome-emoji">👋</span>
+    <p class="welcome-title">Bienvenue sur Revio</p>
+    <p class="welcome-text">Cette application a été développée avec soin pour faciliter les révisions.<br>Si elle t'aide, j'en suis ravi !<br><br>Merci toutefois de ne pas la partager publiquement sans autorisation.<br><br>
+
+<span style="background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600;">
+
+Priou.R
+
+</span>
+
+</p>
+    <button class="welcome-btn" onclick="closeWelcome()">C'est compris !</button>
+  </div>
+</div>
+
 <!-- DOWNLOAD STAGE -->
 <div id="dl-stage"></div>
 
@@ -571,7 +623,16 @@ makeParticles();
 setTimeout(() => {
   document.getElementById('intro').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
+  // Afficher le welcome seulement la première fois
+  if (!localStorage.getItem('revio_welcomed')) {
+    setTimeout(() => document.getElementById('welcome').classList.add('show'), 400);
+  }
 }, 2000);
+
+function closeWelcome() {
+  document.getElementById('welcome').classList.remove('show');
+  localStorage.setItem('revio_welcomed', '1');
+}
 
 // ════ STATE ════
 let mode = 'import', impTab = 'text', len = 'moyenne';
