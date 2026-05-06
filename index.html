@@ -20,11 +20,13 @@
 }
 
 body{
-  height:100vh;
+  margin:0;
+  min-height:100vh;
+  height:100dvh; /* corrige les soucis sur mobile */
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
   background:var(--bg);
   font-family:'Geist',sans-serif;
   color:var(--t1);
