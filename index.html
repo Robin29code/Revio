@@ -14,22 +14,27 @@
   --bg:#0A0A0F;
   --t1:#F0EEF8;
   --t3:#4A4860;
-  --acc:#7B6FFF;
-  --acc2:#C8B8FF;
-  --teal:#60D8C0;
+}
+
+/* FULL SCREEN FIX */
+html,body{
+  height:100%;
 }
 
 body{
-  margin:0;
-  height:100dvh;
+  height:100dvh; /* 🔥 prend tout l'écran mobile */
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:center; /* centre tout */
   background:var(--bg);
   font-family:'Geist',sans-serif;
   color:var(--t1);
-  text-align:center;
+}
+
+/* TOP LOGO */
+.top{
+  display:flex;
+  justify-content:center;
+  padding-top:40px;
 }
 
 /* LOGO */
@@ -40,46 +45,51 @@ body{
 }
 
 .logo-mark{
-  width:40px;height:40px;
+  width:42px;height:42px;
   border-radius:10px;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);
   box-shadow:0 0 20px rgba(123,111,255,.4);
 }
 
-.logo-mark svg{
-  width:22px;height:22px;
-}
-
 .logo-name{
   font-family:'Fraunces',serif;
-  font-size:1.5rem;
+  font-size:1.6rem;
   font-weight:700;
   background:linear-gradient(135deg,#A090FF,#C8B8FF,#60D8C0);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
-/* TEXTE CENTRE */
-.main-text{
-  max-width:500px;
+/* CENTRE */
+.center{
+  flex:1; /* 🔥 prend tout l'espace restant */
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
 }
 
-.main-text h1{
+/* TEXTE */
+.center h1{
   font-family:'Fraunces',serif;
-  font-size:1.6rem;
+  font-size:2.2rem;
   margin-bottom:1rem;
 }
 
-.main-text p{
-  font-size:14px;
+.center p{
+  font-size:15px;
   color:var(--t3);
   line-height:1.7;
+  max-width:420px;
 }
 
 /* SIGNATURE */
 .signature{
-  font-size:13px;
+  margin-top:20px;
+  font-size:18px;
   font-weight:600;
   background:linear-gradient(135deg,#7B6FFF,#C8B8FF,#60D8C0);
   -webkit-background-clip:text;
@@ -91,30 +101,30 @@ body{
 <body>
 
 <!-- LOGO -->
-<div class="logo">
-  <div class="logo-mark">
-    <svg viewBox="0 0 24 24" fill="none">
-      <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
-      <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
-      <path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
+<div class="top">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="3" width="3" height="18" rx="1.5" fill="white"/>
+        <path d="M7 3h6a5 5 0 0 1 0 10H7" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        <path d="M12 13l5 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="logo-name">Revio</span>
   </div>
-  <span class="logo-name">Revio</span>
 </div>
 
-<!-- TEXTE -->
-<div class="main-text">
-  <h1>Petite mise à jour en cours 🚧</h1>
+<!-- CONTENU CENTRÉ -->
+<div class="center">
+  <h1>Maintenance en cours 🚧</h1>
   <p>
     Je suis en train d’améliorer l’application pour vous proposer une meilleure expérience.<br><br>
-    Revio sera normalement de nouveau disponible<br>
-    ce soir.
+    Revio sera de nouveau disponible ce soir.
   </p>
-</div>
 
-<!-- SIGNATURE -->
-<div class="signature">
-  Priou.R
+  <div class="signature">
+    Priou.R
+  </div>
 </div>
 
 </body>
