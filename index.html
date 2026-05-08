@@ -96,34 +96,27 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;o
 .main{flex:1;overflow:hidden;position:relative;min-width:0;}
 
 /* ══ HOME ══ */
-#sc-home{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;gap:1rem;transition:opacity .25s,transform .25s;}
+#sc-home{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;gap:.85rem;transition:opacity .25s,transform .25s;}
 #sc-home.out{opacity:0;transform:scale(.97);pointer-events:none;}
-.home-h{text-align:center;margin-bottom:.5rem;}
-.home-h h1{font-family:'Fraunces',serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:500;letter-spacing:-.03em;margin-bottom:.3rem;}
-.home-h p{font-size:13px;color:var(--t2);}
-.home-cards{display:flex;gap:.85rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px;}
-.hcard{
-  flex:1;min-width:150px;max-width:200px;
-  background:var(--s1);
-  border-radius:var(--rlg);
-  padding:1.4rem 1.1rem;
-  cursor:pointer;text-align:center;
-  position:relative;overflow:hidden;
-  transition:transform .2s,box-shadow .2s,border-color .2s;
-  /* Default border — colored per card */
-}
-.hcard-imp{border:1.5px solid rgba(160,144,255,.25);}
-.hcard-scan{border:1.5px solid rgba(96,216,192,.25);}
-.hcard-ia{border:1.5px solid rgba(240,192,96,.25);}
-.hcard:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.5);}
-.hcard-imp:hover{border-color:rgba(160,144,255,.7);box-shadow:0 14px 36px rgba(160,144,255,.12);}
-.hcard-scan:hover{border-color:rgba(96,216,192,.7);box-shadow:0 14px 36px rgba(96,216,192,.12);}
-.hcard-ia:hover{border-color:rgba(240,192,96,.7);box-shadow:0 14px 36px rgba(240,192,96,.12);}
-.hcard:active{transform:scale(.98);}
-.hcard-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin:0 auto .85rem;}
-.hcard-icon svg{width:22px;height:22px;}
-.hcard-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:.3rem;}
-.hcard-desc{font-size:11px;color:var(--t2);line-height:1.5;}
+.home-h{text-align:center;}
+.home-h h1{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:500;letter-spacing:-.03em;margin-bottom:.25rem;}
+.home-h p{font-size:12px;color:var(--t2);}
+.home-cards{display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:400px;}
+.hcard{width:100%;background:var(--s1);padding:.9rem 1rem;cursor:pointer;display:flex;align-items:center;gap:.85rem;border-radius:12px;transition:background .15s,border-color .15s;}
+.hcard-imp{border:1px solid rgba(160,144,255,.25);}
+.hcard-scan{border:1px solid rgba(96,216,192,.25);}
+.hcard-ia{border:1px solid rgba(240,192,96,.25);}
+.hcard-imp:hover{background:rgba(160,144,255,.06);border-color:rgba(160,144,255,.6);}
+.hcard-scan:hover{background:rgba(96,216,192,.05);border-color:rgba(96,216,192,.6);}
+.hcard-ia:hover{background:rgba(240,192,96,.05);border-color:rgba(240,192,96,.6);}
+.hcard:active{opacity:.8;}
+.hcard-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hcard-icon svg{width:17px;height:17px;}
+.hcard-text{flex:1;min-width:0;}
+.hcard-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:.1rem;}
+.hcard-desc{font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hcard-arrow{width:14px;height:14px;flex-shrink:0;color:var(--t3);transition:transform .15s,color .15s;}
+.hcard:hover .hcard-arrow{transform:translateX(3px);color:var(--t1);}
 
 /* ══ INPUT SCREEN ══ */
 #sc-input{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;transform:scale(1.02);overflow-y:auto;}
@@ -473,22 +466,22 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;o
             <div class="hcard-icon" style="background:rgba(160,144,255,.12)">
               <svg viewBox="0 0 24 24" fill="none" stroke="#A090FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             </div>
-            <div class="hcard-title">Importer</div>
-            <div class="hcard-desc">Texte, fichier ou PDF</div>
+            <div class="hcard-text"><div class="hcard-title">Importer un cours</div><div class="hcard-desc">Collez du texte, un fichier ou un PDF</div></div>
+            <svg class="hcard-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="hcard hcard-scan" onclick="openMode('scan')">
             <div class="hcard-icon" style="background:rgba(96,216,192,.1)">
               <svg viewBox="0 0 24 24" fill="none" stroke="#60D8C0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             </div>
-            <div class="hcard-title">Scanner</div>
-            <div class="hcard-desc">Photo de ton cahier</div>
+            <div class="hcard-text"><div class="hcard-title">Scanner le cours</div><div class="hcard-desc">Prends en photo ton cahier ou tes notes</div></div>
+            <svg class="hcard-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="hcard hcard-ia" onclick="openMode('ia')">
             <div class="hcard-icon" style="background:rgba(240,192,96,.1)">
               <svg viewBox="0 0 24 24" fill="none" stroke="#F0C060" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             </div>
-            <div class="hcard-title">IA libre</div>
-            <div class="hcard-desc">Décris le sujet</div>
+            <div class="hcard-text"><div class="hcard-title">Demander à l'IA</div><div class="hcard-desc">Décris le sujet, l'IA génère ta fiche</div></div>
+            <svg class="hcard-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
       </div>
@@ -551,10 +544,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;o
 <div id="dl-stage"></div>
 
 <script>
-const GROQ_KEY = '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';
+const GROQ_KEY = 'VOTRE_CLE_GROQ_ICI';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const ELEVEN_KEY = 'sk_d7ec39812eb7a003ca52d098db719755812d2cb4d1865854';
-const ELEVEN_VOICE = 'EXAVITQu4vr4xnSDxMaL'; // Bella — multilingual
+const ELEVEN_VOICE = 'cgSgspJ2msm6clMCkdW9'; // Léa — voix française naturelle
 const MAX_PH = 10;
 
 // STATE
